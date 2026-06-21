@@ -175,7 +175,7 @@ const en: Dict = {
     {
       title: "Thank You for Your Attention",
       bullets: [
-        "Slides & resources: github.com/daricvn/claude-in-action-presentation",
+        "Slides & resources: github.com/daricvn/claude-in-action-slide-demo",
         "Try Claude Code today: claude.ai/code",
       ]
     },
@@ -301,7 +301,7 @@ const vi: Dict = {
     {
       title: "Cảm ơn bạn đã chú ý lắng nghe",
       bullets: [
-        "Slide & tài nguyên: github.com/daricvn/claude-in-action-presentation",
+        "Slide & tài nguyên: github.com/daricvn/claude-in-action-slide-demo",
         "Dùng thử Claude Code: claude.ai/code",
       ]
     },
