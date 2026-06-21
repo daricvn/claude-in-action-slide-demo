@@ -57,6 +57,7 @@ const VARIANTS = [
   "enter-unfold",
   "enter-rise",
   "enter-zoom",
+  "enter-curtain",
 ];
 
 // Slow "Ken Burns" drift for each slide's background photo: scale + pan +

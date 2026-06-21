@@ -10,6 +10,7 @@ import {
   BrainCircuit,
   MessageCircleQuestionMark,
   Balloon,
+  Heart,
 } from "lucide-solid";
 
 export type IconComponent = Component<{
@@ -36,6 +37,7 @@ export const SLIDE_ICONS: IconComponent[] = [
   BrainCircuit,
   Balloon,
   MessageCircleQuestionMark,
+  Heart,
 ];
 
 /** Number of content slides (excludes the hero). */

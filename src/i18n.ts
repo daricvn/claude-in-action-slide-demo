@@ -172,6 +172,13 @@ const en: Dict = {
       title: "Questions & Answers",
       bullets: [],
     },
+    {
+      title: "Thank You for Your Attention",
+      bullets: [
+        "Slides & resources: github.com/daricvn/claude-in-action-presentation",
+        "Try Claude Code today: claude.ai/code",
+      ]
+    },
   ],
 };
 
@@ -290,6 +297,13 @@ const vi: Dict = {
     {
       title: "Hỏi & Đáp",
       bullets: [],
+    },
+    {
+      title: "Cảm ơn bạn đã chú ý lắng nghe",
+      bullets: [
+        "Slide & tài nguyên: github.com/daricvn/claude-in-action-presentation",
+        "Dùng thử Claude Code: claude.ai/code",
+      ]
     },
   ],
 };
