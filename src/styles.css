@@ -1,0 +1,342 @@
+/*
+ * Global styles for the deck.
+ *
+ * UnoCSS handles utilities; this file owns the things utilities can't express
+ * cleanly: the base canvas, custom easing keyframes, the slide-card entrance,
+ * and the per-bullet staggered reveal.
+ */
+
+:root {
+  /* Premium "expensive" easing — slow-out, used everywhere for cohesion. */
+  --ease-keynote: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #05050a;
+  color: #e8e8f0;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden; /* presentation: no page scroll, slides own the viewport */
+}
+
+#root {
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Per-slide card entrance.                                            */
+/*                                                                     */
+/* The card sits hidden until its slide becomes active; then the       */
+/* variant class (.enter-*) drives a unique keyframe entrance. Because  */
+/* leaving a slide removes .is-active, revisiting replays the entrance. */
+/* ------------------------------------------------------------------ */
+.slide-card {
+  opacity: 0; /* hidden until active */
+}
+/* Promote to its own layer ONLY while entering. A permanent will-change kept
+   all 10 cards (in the 1000vw track) GPU-promoted with retained blur buffers. */
+.slide-card.is-active {
+  animation-duration: 0.95s;
+  animation-timing-function: var(--ease-keynote);
+  animation-fill-mode: both;
+  will-change: transform, opacity, filter, clip-path;
+}
+
+/* Map each variant to its keyframe (+ per-variant timing / origin). */
+.enter-hero.is-active { animation-name: enter-hero; animation-duration: 1.1s; }
+.enter-rise.is-active { animation-name: enter-rise; }
+.enter-zoom.is-active { animation-name: enter-zoom; animation-duration: 1s; }
+.enter-flipx.is-active { animation-name: enter-flipx; animation-duration: 1.05s; }
+.enter-door.is-active {
+  animation-name: enter-door;
+  animation-duration: 1.05s;
+  transform-origin: right center;
+}
+.enter-curtain.is-active { animation-name: enter-curtain; animation-duration: 1.1s; }
+.enter-tilt.is-active { animation-name: enter-tilt; }
+.enter-focus.is-active { animation-name: enter-focus; animation-duration: 1s; }
+.enter-unfold.is-active {
+  animation-name: enter-unfold;
+  animation-duration: 1.1s;
+  transform-origin: top center;
+}
+.enter-glide.is-active { animation-name: enter-glide; animation-duration: 1s; }
+
+@keyframes enter-hero {
+  0% { opacity: 0; transform: scale(0.9) translateY(22px); filter: blur(10px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes enter-rise {
+  0% { opacity: 0; transform: translateY(70px) scale(0.94); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes enter-zoom {
+  0% { opacity: 0; transform: scale(0.7); filter: blur(18px); }
+  60% { filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes enter-flipx {
+  0% { opacity: 0; transform: perspective(1300px) rotateX(38deg) translateY(60px); }
+  100% { opacity: 1; transform: perspective(1300px) rotateX(0) translateY(0); }
+}
+@keyframes enter-door {
+  0% { opacity: 0; transform: perspective(1300px) rotateY(-32deg) translateX(90px); }
+  100% { opacity: 1; transform: perspective(1300px) rotateY(0) translateX(0); }
+}
+@keyframes enter-curtain {
+  0% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(28px); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+}
+@keyframes enter-tilt {
+  0% { opacity: 0; transform: rotate(-7deg) scale(0.82) translateY(50px); }
+  100% { opacity: 1; transform: rotate(0) scale(1) translateY(0); }
+}
+@keyframes enter-focus {
+  0% { opacity: 0; transform: scale(1.18); filter: blur(26px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes enter-unfold {
+  0% { opacity: 0; transform: perspective(1300px) rotateX(-88deg); }
+  55% { opacity: 1; }
+  100% { opacity: 1; transform: perspective(1300px) rotateX(0); }
+}
+@keyframes enter-glide {
+  0% { opacity: 0; transform: translateX(-130px) skewX(9deg); filter: blur(8px); }
+  100% { opacity: 1; transform: translateX(0) skewX(0); filter: blur(0); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Orb idle drift.                                                     */
+/*                                                                     */
+/* Orbs reposition (left/top) on slide change via transition; this     */
+/* keyframe adds an endless slow wander so they stay alive between     */
+/* slides. Transform only (the pre-blurred layer is just moved by the  */
+/* compositor — cheap); the -50% keeps each orb centred on its point.  */
+/* ------------------------------------------------------------------ */
+.orb {
+  will-change: transform;
+}
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%      { transform: translate(-50%, -50%) translate(2.5vmax, -2vmax); }
+}
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%      { transform: translate(-50%, -50%) translate(-3vmax, 2.2vmax); }
+}
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%      { transform: translate(-50%, -50%) translate(1.8vmax, 3vmax); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ambient background drift (Ken Burns).                               */
+/*                                                                     */
+/* The per-slide photo slowly scales / pans / breathes. It animates    */
+/* ONLY while its card is active — all 10 cards live in the 1000vw     */
+/* track, so animating the off-screen nine would re-promote retained   */
+/* layers (the will-change cliff in ARCHITECTURE.md § Performance).    */
+/*                                                                     */
+/* Cover invariant ("stay fit or larger than card"): base scale is     */
+/* always >= 1.05 and every pan offset stays under the scale headroom, */
+/* so bg-cover never reveals the glass beneath. blur is the perf knob: */
+/* kept <= 2px, absent from some flavours; drop the filter lines for   */
+/* compositor-only (near-free) motion if a device dips.                */
+/* ------------------------------------------------------------------ */
+.slide-bg-art {
+  /* Static fallback (also the reduced-motion + inactive state). */
+  opacity: 0.45;
+  transform: scale(1.06);
+}
+/* Promote + run only on the active card; scoped will-change like .reveal. */
+.is-active .slide-bg-art {
+  will-change: transform, opacity, filter;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-fill-mode: both;
+}
+
+.ambient-1.is-active .slide-bg-art { animation-name: amb-1; animation-duration: 10s; }
+.ambient-2.is-active .slide-bg-art { animation-name: amb-2; animation-duration: 14s; }
+.ambient-3.is-active .slide-bg-art { animation-name: amb-3; animation-duration: 11s; }
+.ambient-4.is-active .slide-bg-art { animation-name: amb-4; animation-duration: 16s; }
+.ambient-5.is-active .slide-bg-art { animation-name: amb-5; animation-duration: 9s; }
+.ambient-6.is-active .slide-bg-art { animation-name: amb-6; animation-duration: 14s; }
+
+/* Slow zoom-in. */
+@keyframes amb-1 {
+  0%   { transform: scale(1.00); opacity: 0.42; }
+  100% { transform: scale(1.12); opacity: 0.50; }
+}
+/* Pan left→right with a faint focus pull (1.08 → 4% slack, pan 1.5%). */
+@keyframes amb-2 {
+  0%   { transform: scale(1.08) translate(-1.5%, 0);  opacity: 0.40; filter: blur(0); }
+  100% { transform: scale(1.08) translate( 3.5%, 0);  opacity: 0.50; filter: blur(2px); }
+}
+/* Drift up while zooming out, blur resolving (min scale 1.05, pan 1.5%). */
+@keyframes amb-3 {
+  0%   { transform: scale(1.0) translateY( 1.5%);    opacity: 0.38; filter: blur(2px); }
+  100% { transform: scale(1.15) translateY(-1.5%);    opacity: 0.50; filter: blur(0); }
+}
+/* Diagonal drift (1.09 → 4.5% slack, pan 1.2%). */
+@keyframes amb-4 {
+  0%   { transform: scale(1.05) translate( 1.2%,  1.2%); opacity: 0.44; }
+  100% { transform: scale(1.19) translate(-1.2%, -1.2%); opacity: 0.50; }
+}
+/* Breathe: zoom + opacity + blur pulse (normal direction, symmetric loop). */
+@keyframes amb-5 {
+  0%, 100% { transform: scale(1); opacity: 0.36; filter: blur(0); }
+  50%      { transform: scale(1.15); opacity: 0.50; filter: blur(1.5px); }
+}
+/* Slow zoom-out with counter-pan (1.12 → 6% slack, pan 1%). */
+@keyframes amb-6 {
+  0%   { transform: scale(1.15) translate(-1%,  1%); opacity: 0.50; }
+  100% { transform: scale(1) translate( 1%, -1%); opacity: 0.40; }
+}
+
+/* Icon gets a touch more travel for a layered feel. */
+.slide-icon {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 0.7s var(--ease-keynote) 0.05s,
+    transform 0.7s var(--ease-keynote) 0.05s;
+}
+.is-active .slide-icon {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Staggered bullets — transition-delay is set inline per index.      */
+/* ------------------------------------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s var(--ease-keynote),
+    transform 0.6s var(--ease-keynote);
+}
+/* will-change only on the active slide's reveals — not all ~70 across the deck. */
+.is-active .reveal {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: transform, opacity;
+}
+
+/* Per-variant bullet flavours — same staggered timing, different vector,
+   so the inner content echoes each card's distinct entrance. */
+.enter-glide .reveal { transform: translateX(-44px); }
+.enter-glide.is-active .reveal { transform: none; }
+.enter-zoom .reveal { transform: scale(0.82); }
+.enter-zoom.is-active .reveal { transform: none; }
+.enter-door .reveal { transform: translateX(48px); }
+.enter-door.is-active .reveal { transform: none; }
+.enter-tilt .reveal { transform: translateY(18px) rotate(-2deg); }
+.enter-tilt.is-active .reveal { transform: none; }
+.enter-focus .reveal { transform: scale(1.08); }
+.enter-focus.is-active .reveal { transform: none; }
+
+/* ------------------------------------------------------------------ */
+/* Hero title — per-letter infinite wave.                              */
+/*                                                                     */
+/* Each glyph is its own inline-block span carrying text-gradient, so  */
+/* it can transform without breaking the gradient clip. inline-block   */
+/* applies always (keeps layout stable); the bob + will-change run     */
+/* ONLY while the hero card .is-active, so the off-screen hero in the  */
+/* 1000vw track never holds promoted layers (perf cliff, see ARCH).    */
+/* Per-letter phase comes from inline animation-delay (index * 0.07s). */
+/* ------------------------------------------------------------------ */
+.wave-letter {
+  display: inline-block;
+}
+.is-active .wave-letter {
+  animation: title-wave 2.4s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes title-wave {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-0.18em); }
+}
+
+/* Soft pulsing glow for the hero accent ring. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Thin animated sheen across the top progress bar fill. */
+@keyframes drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* All Slides Modal — overlay fade + panel rise + staggered cards.    */
+/* ------------------------------------------------------------------ */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-panel-in {
+  from { opacity: 0; transform: scale(0.94) translateY(28px); filter: blur(12px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes modal-card-in {
+  from { opacity: 0; transform: translateY(22px) scale(0.92); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal-backdrop-enter {
+  animation: modal-backdrop-in 0.3s var(--ease-keynote) both;
+}
+
+.modal-panel-enter {
+  animation: modal-panel-in 0.45s var(--ease-keynote) 0.05s both;
+}
+
+.modal-card-enter {
+  animation: modal-card-in 0.42s var(--ease-keynote) both;
+  /* animation-delay set inline per card index */
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .slide-card.is-active {
+    animation-duration: 0.001s !important;
+  }
+  /* Hold the static fallback frame — no ambient drift. */
+  .is-active .slide-bg-art,
+  .is-active .wave-letter,
+  .orb {
+    animation: none !important;
+  }
+  .slide-icon,
+  .reveal {
+    transition-duration: 0.001s !important;
+  }
+  .modal-backdrop-enter,
+  .modal-panel-enter,
+  .modal-card-enter {
+    animation-duration: 0.001s !important;
+  }
+}
