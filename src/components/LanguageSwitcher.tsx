@@ -7,6 +7,7 @@ import {
   onCleanup,
   type Component,
 } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import { locale, setLocale, LOCALES, t, type Locale } from "../i18n";
 
 /* -------------------------------------------------------------------------- */
@@ -16,7 +17,7 @@ import { locale, setLocale, LOCALES, t, type Locale } from "../i18n";
 const UKFlag: Component = () => {
   const id = createUniqueId();
   return (
-    <svg viewBox="0 0 60 30" class="block w-full h-full" aria-hidden="true">
+    <svg viewBox="0 0 60 30" width="24" height="16" class="block w-full h-full" aria-hidden="true">
       <clipPath id={id}>
         <path d="M0 0v30h60V0z" />
       </clipPath>
@@ -36,7 +37,7 @@ const UKFlag: Component = () => {
 };
 
 const VNFlag: Component = () => (
-  <svg viewBox="0 0 30 20" class="block w-full h-full" aria-hidden="true">
+  <svg viewBox="0 0 30 20" width="24" height="16" class="block w-full h-full" aria-hidden="true">
     <rect width="30" height="20" fill="#DA251D" />
     <path
       fill="#FF0"
@@ -47,18 +48,15 @@ const VNFlag: Component = () => (
 
 const FLAGS: Record<Locale, Component> = { en: UKFlag, vi: VNFlag };
 
-const Flag: Component<{ code: Locale; class?: string }> = (props) => {
-  const Art = FLAGS[props.code];
-  return (
-    <span
-      class={`block overflow-hidden rounded-[3px] ring-1 ring-white/15 ${
-        props.class ?? ""
-      }`}
-    >
-      <Art />
-    </span>
-  );
-};
+const Flag: Component<{ code: Locale; class?: string }> = (props) => (
+  <span
+    class={`block overflow-hidden rounded-[3px] ring-1 ring-white/15 ${
+      props.class ?? ""
+    }`}
+  >
+    <Dynamic component={FLAGS[props.code]} />
+  </span>
+);
 
 /* -------------------------------------------------------------------------- */
 /* Switcher — fixed top-left. Trigger shows only the active flag; the dropdown */
@@ -92,6 +90,7 @@ const LanguageSwitcher: Component = () => {
           setOpen((o) => !o);
         }}
         class="glass-pill grid place-items-center w-11 h-11 rounded-full transition-all duration-300 shadow-lg shadow-black/40 hover:bg-white/10 hover:scale-105 hover:shadow-cyanGlow/20 hover:border-white/20 cursor-pointer"
+        style="width:2.75rem;height:2.75rem;flex-shrink:0"
         aria-label={t().ui.changeLanguage}
         aria-haspopup="listbox"
         aria-expanded={open()}
