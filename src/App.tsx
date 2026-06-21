@@ -21,6 +21,7 @@ import slide5 from "./assets/slide-5.jpg";
 import slide6 from "./assets/slide-6.jpg";
 import slide7 from "./assets/slide-7.jpg";
 import slide8 from "./assets/slide-8.jpg";
+import slide9 from "./assets/slide-9.jpg";
 import demoMempalace from "./assets/demo-mempalace.mp4";
 
 // Per-content-slide background art. Index i maps to SLIDES[i] (slide i+1).
@@ -33,6 +34,7 @@ const SLIDE_IMAGES = [
   slide6,
   slide7,
   slide8,
+  slide9
 ];
 
 const TOTAL = SLIDES.length + 1; // 9: hero + eight content slides
@@ -50,6 +52,7 @@ const VARIANTS = [
   "enter-tilt",
   "enter-focus",
   "enter-unfold",
+  "enter-rise",
   "enter-zoom",
 ];
 
@@ -67,6 +70,7 @@ const AMBIENT = [
   "ambient-6",
   "ambient-1",
   "ambient-2",
+  "ambient-3",
 ];
 
 // Demo videos per content slide, keyed by zero-based SLIDES index. A slide can

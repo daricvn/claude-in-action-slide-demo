@@ -8,7 +8,9 @@ import {
   Coins,
   MonitorPlay,
   BrainCircuit,
+  Sparkles,
   MessageCircleQuestionMark,
+  Balloon,
 } from "lucide-solid";
 
 /** A single content slide (1–8). Slide 0 is the bespoke hero. */
@@ -122,6 +124,17 @@ export const SLIDES: Slide[] = [
       "Treat Claude as a junior colleague you manage, not magic",
     ],
     insight: "Scale comes from the system you build around the model.",
+  },
+  {
+    icon: Balloon,
+    title: "Fun to Know",
+    bullets: [
+      '/caveman ultra — max compression. Normal: "I\'d be happy to help! The error likely occurs because the token has expired and…" → Ultra: "Token expired. Fix TTL."',
+      "Cavecrew — specialist sub-agents: builder, investigator, reviewer.",
+      "NeoLabHQ/context-engineering-kit — architecture, TDD & brainstorming templates.",
+      '"Hack" Opus: inject Fable 5 system prompt to unlock its full reasoning — https://github.com/sgup/ai/blob/main/Fable5.md',
+    ],
+    insight: "The ecosystem around Claude moves fast — stay curious.",
   },
   {
     icon: MessageCircleQuestionMark,
