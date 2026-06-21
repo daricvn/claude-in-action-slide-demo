@@ -1,5 +1,6 @@
 import {
   createSignal,
+  batch,
   onMount,
   onCleanup,
   For,
@@ -7,12 +8,14 @@ import {
   type Component,
   type Accessor,
 } from "solid-js";
-import { Lightbulb, Sparkles, Play, X } from "lucide-solid";
-import { SLIDES, type Slide } from "./slides";
+import { Lightbulb, Sparkles, Play, X, Maximize2, Minimize2 } from "lucide-solid";
+import { SLIDE_ICONS, SLIDE_COUNT, type IconComponent } from "./slides";
+import { locale, t, type Locale, type SlideText } from "./i18n";
 import Orbs from "./components/Orbs";
 import ParticleField from "./components/ParticleField";
 import SlideNav from "./components/SlideNav";
 import AllSlidesModal from "./components/AllSlidesModal";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import slide1 from "./assets/slide-1.jpg";
 import slide2 from "./assets/slide-2.jpg";
 import slide3 from "./assets/slide-3.jpg";
@@ -37,7 +40,7 @@ const SLIDE_IMAGES = [
   slide9
 ];
 
-const TOTAL = SLIDES.length + 1; // 9: hero + eight content slides
+const TOTAL = SLIDE_COUNT + 1; // hero + content slides
 const pad = (n: number) => String(n).padStart(2, "0");
 
 // Unique entrance per content slide (1..8). Each maps to an .enter-* keyframe
@@ -73,22 +76,34 @@ const AMBIENT = [
   "ambient-3",
 ];
 
-// Demo videos per content slide, keyed by zero-based SLIDES index. A slide can
+// Demo videos per content slide, keyed by zero-based slide index. A slide can
 // carry any number of demos; each renders its own labelled "Watch" button and
 // plays in the shared VideoModal. To add a video: import the asset above, then
-// append a `{ label, src }` entry under the target slide's index here.
-type Demo = { label: string; src: string };
+// append a `{ label, src }` entry under the target slide's index here. `label`
+// is localized — one string per Locale (resolved via `locale()` at render).
+type Demo = { label: Record<Locale, string>; src: string };
 const SLIDE_DEMOS: Record<number, Demo[]> = {
-  6: [{ label: "Watch Mempalace Demo", src: demoMempalace }],
+  6: [
+    {
+      label: {
+        en: "Watch Mempalace Demo",
+        vi: "Xem demo Mempalace",
+      },
+      src: demoMempalace,
+    },
+  ],
 };
 
 /* -------------------------------------------------------------------------- */
 /* Hero (slide 0)                                                             */
 /* -------------------------------------------------------------------------- */
-const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
+const HeroSlide: Component<{
+  active: Accessor<boolean>;
+  exiting: Accessor<boolean>;
+}> = (props) => (
   <div
     class="slide-card enter-hero glass relative rounded-3xl px-10 sm:px-20 py-16 sm:py-20 max-w-4xl text-center overflow-hidden"
-    classList={{ "is-active": props.active() }}
+    classList={{ "is-active": props.active(), "is-exiting": props.exiting() }}
   >
     {/* Inner top highlight for that real-glass sheen. */}
     <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
@@ -101,7 +116,7 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
       class="reveal text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-cyanGlow/80 mb-6"
       style={{ "transition-delay": props.active() ? "0.15s" : "0s" }}
     >
-      Enterprise Engineering Keynote
+      {t().ui.heroEyebrow}
     </p>
 
     <h1
@@ -130,7 +145,7 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
       class="reveal mt-6 text-lg sm:text-2xl text-white/70 font-light max-w-2xl mx-auto"
       style={{ "transition-delay": props.active() ? "0.4s" : "0s" }}
     >
-      Scaling AI workflows for Enterprise Engineering
+      {t().ui.heroSubtitle}
     </p>
 
     <div
@@ -138,7 +153,7 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
       style={{ "transition-delay": props.active() ? "0.55s" : "0s" }}
     >
       <span class="w-1.5 h-1.5 rounded-full bg-emeraldGlow" />
-      Presented by Huy Truong, Darick Nguyen
+      {t().ui.presentedBy}
     </div>
   </div>
 );
@@ -181,21 +196,24 @@ const VideoModal: Component<{
 /* Content slide (1–9)                                                        */
 /* -------------------------------------------------------------------------- */
 const ContentSlide: Component<{
-  slide: Slide;
-  index: number; // 1-based content index (1..9)
+  icon: IconComponent; // structural — from SLIDE_ICONS, locale-independent
+  text: SlideText; // localized title/bullets/insight — reactive on locale
+  index: number; // 1-based content index (1..10)
   variant: string; // .enter-* entrance class — unique per slide
   ambient: string; // ambient-* drift class — slow Ken Burns on the bg photo
   image: string; // per-slide background art (Vite-resolved URL)
   active: Accessor<boolean>;
+  exiting: Accessor<boolean>;
   demos?: Demo[]; // zero or more demo videos for this slide
   onPlay?: (src: string) => void; // open a demo in the shared VideoModal
 }> = (props) => {
-  const Icon = props.slide.icon;
+  const Icon = props.icon;
   return (
     <div
       class="slide-card glass relative rounded-3xl px-9 sm:px-14 py-11 sm:py-14 w-full max-w-4xl overflow-hidden flex flex-col min-h-[460px] sm:min-h-[520px]"
       classList={{
         "is-active": props.active(),
+        "is-exiting": props.exiting(),
         [props.variant]: true,
         [props.ambient]: true,
       }}
@@ -223,7 +241,7 @@ const ContentSlide: Component<{
             <Icon size={30} stroke-width={1.6} />
           </div>
           <span class="font-mono text-sm tracking-[0.25em] text-white/35 mt-2">
-            {pad(props.index)} / {pad(SLIDES.length)}
+            {pad(props.index)} / {pad(SLIDE_COUNT)}
           </span>
         </div>
 
@@ -232,12 +250,12 @@ const ContentSlide: Component<{
           class="reveal text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white leading-tight mb-8 text-balance"
           style={{ "transition-delay": props.active() ? "0.12s" : "0s" }}
         >
-          {props.slide.title}
+          {props.text.title}
         </h2>
 
         {/* Bullets — staggered */}
         <ul class="space-y-4">
-          <For each={props.slide.bullets}>
+          <For each={props.text.bullets}>
             {(bullet, i) => (
               <li
                 class="reveal flex items-start gap-4"
@@ -261,7 +279,7 @@ const ContentSlide: Component<{
         <div class="flex-1" />
 
         {/* Key insight pill */}
-        <Show when={!!props.slide.insight}>
+        <Show when={!!props.text.insight}>
           <div
             class="reveal mt-8 inline-flex items-center gap-3 pl-3 pr-6 py-3 rounded-full glass-pill"
             style={{ "transition-delay": props.active() ? "0.7s" : "0s" }}
@@ -270,8 +288,8 @@ const ContentSlide: Component<{
               <Lightbulb size={15} />
             </span>
             <span class="text-sm sm:text-base text-white/90">
-              <span class="text-violetGlow font-bold">Key Insight: </span>
-              {props.slide.insight}
+              <span class="text-violetGlow font-bold">{t().ui.keyInsight}</span>
+              {props.text.insight}
             </span>
           </div>
         </Show>
@@ -293,7 +311,7 @@ const ContentSlide: Component<{
                   }}
                 >
                   <Play size={14} class="text-cyanGlow" fill="currentColor" />
-                  {demo.label}
+                  {demo.label[locale()]}
                 </button>
               )}
             </For>
@@ -308,11 +326,46 @@ const ContentSlide: Component<{
 /* App                                                                        */
 /* -------------------------------------------------------------------------- */
 const App: Component = () => {
-  const [current, setCurrent] = createSignal(0);
+  const [current, setCurrent] = createSignal(0);       // track position
+  const [activeIndex, setActiveIndex] = createSignal(0); // controls is-active / enter animation
+  const [exitingIndex, setExitingIndex] = createSignal(-1); // controls is-exiting / exit animation
   const [modalOpen, setModalOpen] = createSignal(false);
   const [activeVideo, setActiveVideo] = createSignal<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = createSignal(false);
 
-  const goto = (i: number) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  let exitTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const EXIT_DURATION = 500; // ms — matches longest .is-exiting CSS animation
+
+  const goto = (i: number) => {
+    if (exitingIndex() !== -1) return; // locked during transition
+    const target = Math.max(0, Math.min(TOTAL - 1, i));
+    if (target === current()) return;
+
+    batch(() => {
+      setExitingIndex(current());
+      setActiveIndex(-1);
+    });
+
+    if (exitTimer) clearTimeout(exitTimer);
+    exitTimer = setTimeout(() => {
+      exitTimer = null;
+      batch(() => {
+        setExitingIndex(-1);
+        setCurrent(target);
+        setActiveIndex(target);
+      });
+    }, EXIT_DURATION);
+  };
+
   const next = () => goto(current() + 1);
   const prev = () => goto(current() - 1);
 
@@ -363,8 +416,17 @@ const App: Component = () => {
     if (Math.abs(dx) > 60) (dx < 0 ? next : prev)();
   };
 
-  onMount(() => window.addEventListener("keydown", onKey));
-  onCleanup(() => window.removeEventListener("keydown", onKey));
+  const onFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
+
+  onMount(() => {
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+  });
+  onCleanup(() => {
+    window.removeEventListener("keydown", onKey);
+    document.removeEventListener("fullscreenchange", onFullscreenChange);
+    if (exitTimer) clearTimeout(exitTimer);
+  });
 
   return (
     <main
@@ -375,6 +437,18 @@ const App: Component = () => {
       {/* Living background: blurred colour orbs (far) + animated constellation */}
       <Orbs slide={current()} />
       <ParticleField slide={current()} />
+
+      {/* Language switcher — fixed top-left, flag-only trigger */}
+      <LanguageSwitcher />
+
+      {/* Fullscreen toggle — fixed top-right */}
+      <button
+        class="fixed top-3 right-3 z-40 grid place-items-center w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white cursor-pointer transition-colors backdrop-blur-sm"
+        onClick={toggleFullscreen}
+        aria-label={isFullscreen() ? "Exit fullscreen" : "Enter fullscreen"}
+      >
+        {isFullscreen() ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+      </button>
 
       {/* Top progress bar */}
       <div class="fixed top-0 inset-x-0 h-[3px] z-40 bg-white/5">
@@ -393,25 +467,31 @@ const App: Component = () => {
         style={{
           width: `${TOTAL * 100}vw`,
           transform: `translateX(-${current() * 100}vw)`,
-          transition: "transform 0.7s cubic-bezier(0.23,1,0.32,1)",
+          transition: "none",
         }}
       >
         {/* Slide 0 — hero */}
         <section class="w-screen h-full shrink-0 grid place-items-center px-6">
-          <HeroSlide active={() => current() === 0} />
+          <HeroSlide
+            active={() => activeIndex() === 0}
+            exiting={() => exitingIndex() === 0}
+          />
         </section>
 
-        {/* Slides 1–9 — content */}
-        <For each={SLIDES}>
-          {(slide, i) => (
+        {/* Content slides — icons are structural; text comes from i18n and is
+            read inside JSX so the cards re-render when the locale flips. */}
+        <For each={SLIDE_ICONS}>
+          {(icon, i) => (
             <section class="w-screen h-full shrink-0 grid place-items-center px-6">
               <ContentSlide
-                slide={slide}
+                icon={icon}
+                text={t().slides[i()]}
                 index={i() + 1}
                 variant={VARIANTS[i()]}
                 ambient={AMBIENT[i()]}
                 image={SLIDE_IMAGES[i()]}
-                active={() => current() === i() + 1}
+                active={() => activeIndex() === i() + 1}
+                exiting={() => exitingIndex() === i() + 1}
                 demos={SLIDE_DEMOS[i()]}
                 onPlay={setActiveVideo}
               />

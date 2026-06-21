@@ -1,6 +1,7 @@
 import { For, Show, type Component } from 'solid-js';
 import { X, Sparkles } from 'lucide-solid';
-import { SLIDES } from '../slides';
+import { SLIDE_ICONS, SLIDE_COUNT } from '../slides';
+import { t } from '../i18n';
 
 /**
  * Glass overlay listing every slide as a clickable mini-card. Clicking a card
@@ -32,9 +33,9 @@ const AllSlidesModal: Component<{
                 <Sparkles size={18} />
               </span>
               <div>
-                <p class="text-white font-semibold tracking-tight">All Slides</p>
+                <p class="text-white font-semibold tracking-tight">{t().ui.allSlides}</p>
                 <p class="text-xs text-white/40">
-                  {SLIDES.length + 1} slides · click to jump
+                  {t().ui.slidesJump(SLIDE_COUNT + 1)}
                 </p>
               </div>
             </div>
@@ -50,11 +51,14 @@ const AllSlidesModal: Component<{
           {/* Grid */}
           <div class="overflow-y-auto px-8 py-7">
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              <For each={[null, ...SLIDES]}>
-                {(slide, i) => {
+              <For each={[null, ...SLIDE_ICONS]}>
+                {(icon, i) => {
                   const idx = i();
                   const active = idx === props.current;
-                  const Icon = slide?.icon;
+                  const Icon = icon;
+                  // idx 0 = hero (brand title, no icon); idx>=1 = content slide.
+                  const title = () =>
+                    idx === 0 ? 'Claude in Action' : t().slides[idx - 1].title;
                   return (
                     <button
                       onClick={() => props.onSelect(idx)}
@@ -85,7 +89,7 @@ const AllSlidesModal: Component<{
                         </Show>
                       </div>
                       <p class="text-sm font-medium leading-snug text-white/85 line-clamp-3">
-                        {slide ? slide.title : 'Claude in Action'}
+                        {title()}
                       </p>
                     </button>
                   );

@@ -1,5 +1,6 @@
 import { type Component } from 'solid-js';
 import { ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-solid';
+import { t } from '../i18n';
 
 /**
  * Fixed glass navigation pill at the bottom-center: previous / next chevrons,
@@ -55,7 +56,7 @@ const SlideNav: Component<{
           aria-label="Show all slides"
         >
           <LayoutGrid size={18} class="text-violetGlow" />
-          <span class="hidden sm:inline text-sm font-medium">All Slides</span>
+          <span class="hidden sm:inline text-sm font-medium">{t().ui.allSlides}</span>
         </button>
       </div>
     </div>
