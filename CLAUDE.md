@@ -20,20 +20,32 @@ performance constraints. This file is only the quick map.
 
 ## Adding a demo video to a slide
 
-`VideoModal` + `onWatchDemo` pattern lives in `src/App.tsx`. To wire a video into any slide:
+Videos are data-driven via the `SLIDE_DEMOS` map in `src/App.tsx`. A slide can
+carry **any number** of demos; each renders its own labelled "Watch" button, and
+all of them play in one shared `VideoModal` (driven by the `activeVideo` signal).
+To add a video to any slide:
 
 1. **Drop video** into `src/assets/` (e.g. `demo-foo.mp4`).
 2. **Import** it at the top of `App.tsx` alongside other asset imports:
    ```ts
    import demoFoo from './assets/demo-foo.mp4';
    ```
-3. **Target the slide by zero-based index** in the `<For each={SLIDES}>` render. Pass `onWatchDemo` only for that index:
-   ```tsx
-   onWatchDemo={i() === N ? () => setVideoOpen(true) : undefined}
+3. **Append a `{ label, src }` entry** under the target slide's zero-based index
+   in `SLIDE_DEMOS`:
+   ```ts
+   const SLIDE_DEMOS: Record<number, Demo[]> = {
+     6: [
+       { label: 'Watch Mempalace Demo', src: demoMempalace },
+       { label: 'Watch Foo Demo', src: demoFoo }, // second demo, same slide
+     ],
+   };
    ```
-   where `N` = `SLIDES` index (0-based), e.g. slide 9 (last) = `8`.
-4. **If adding a second independent video**, add a new signal (`videoFooOpen`) and a second `<VideoModal>` instance with its own `src` and `onClose`. Do not reuse the existing `videoOpen` signal for a different video.
-5. `VideoModal` closes on: X button (top-right), clicking the dark overlay, or Escape key. No auto-close on video end.
+   where the key `N` = `SLIDES` index (0-based), e.g. last slide = `SLIDES.length - 1`.
+4. **No new signal or second `<VideoModal>` is needed.** Every demo button calls
+   `onPlay(src)` → `setActiveVideo(src)`, and the single shared modal plays it.
+   The button `label` is what the user sees, so make it specific per video.
+5. `VideoModal` closes on: X button (top-right), clicking the dark overlay, or
+   Escape key (resets `activeVideo` to `null`). No auto-close on video end.
 
 ## Rules
 - UnoCSS preset is `presetWind3` — needs blur/shadow/ring/gradient utilities. Not `presetMini`.

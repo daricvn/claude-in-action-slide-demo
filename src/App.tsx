@@ -6,45 +6,51 @@ import {
   Show,
   type Component,
   type Accessor,
-} from 'solid-js';
-import { Lightbulb, Sparkles, Play, X } from 'lucide-solid';
-import { SLIDES, type Slide } from './slides';
-import Orbs from './components/Orbs';
-import ParticleField from './components/ParticleField';
-import SlideNav from './components/SlideNav';
-import AllSlidesModal from './components/AllSlidesModal';
-import slide1 from './assets/slide-1.jpg';
-import slide2 from './assets/slide-2.jpg';
-import slide3 from './assets/slide-3.jpg';
-import slide4 from './assets/slide-4.jpg';
-import slide5 from './assets/slide-5.jpg';
-import slide6 from './assets/slide-6.jpg';
-import slide7 from './assets/slide-7.jpg';
-import slide8 from './assets/slide-8.jpg';
-import slide9 from './assets/slide-9.jpg';
-import demoMempalace from './assets/demo-mempalace.mp4';
+} from "solid-js";
+import { Lightbulb, Sparkles, Play, X } from "lucide-solid";
+import { SLIDES, type Slide } from "./slides";
+import Orbs from "./components/Orbs";
+import ParticleField from "./components/ParticleField";
+import SlideNav from "./components/SlideNav";
+import AllSlidesModal from "./components/AllSlidesModal";
+import slide1 from "./assets/slide-1.jpg";
+import slide2 from "./assets/slide-2.jpg";
+import slide3 from "./assets/slide-3.jpg";
+import slide4 from "./assets/slide-4.jpg";
+import slide5 from "./assets/slide-5.jpg";
+import slide6 from "./assets/slide-6.jpg";
+import slide7 from "./assets/slide-7.jpg";
+import slide8 from "./assets/slide-8.jpg";
+import demoMempalace from "./assets/demo-mempalace.mp4";
 
 // Per-content-slide background art. Index i maps to SLIDES[i] (slide i+1).
 const SLIDE_IMAGES = [
-  slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9,
+  slide1,
+  slide2,
+  slide3,
+  slide4,
+  slide5,
+  slide6,
+  slide7,
+  slide8,
 ];
 
-const TOTAL = SLIDES.length + 1; // 10: hero + nine content slides
-const pad = (n: number) => String(n).padStart(2, '0');
+const TOTAL = SLIDES.length + 1; // 9: hero + eight content slides
+const pad = (n: number) => String(n).padStart(2, "0");
 
-// Unique entrance per content slide (1..9). Each maps to an .enter-* keyframe
+// Unique entrance per content slide (1..8). Each maps to an .enter-* keyframe
 // defined in styles.css: rise, zoom, 3D flip, door, curtain, tilt, focus-blur,
-// unfold, glide-skew. The hero uses .enter-hero.
+// unfold. The hero uses .enter-hero.
 const VARIANTS = [
-  'enter-rise',
-  'enter-zoom',
-  'enter-flipx',
-  'enter-door',
-  'enter-curtain',
-  'enter-tilt',
-  'enter-focus',
-  'enter-unfold',
-  'enter-glide',
+  "enter-rise",
+  "enter-zoom",
+  "enter-flipx",
+  "enter-door",
+  "enter-curtain",
+  "enter-tilt",
+  "enter-focus",
+  "enter-unfold",
+  "enter-zoom",
 ];
 
 // Slow "Ken Burns" drift for each slide's background photo: scale + pan +
@@ -53,16 +59,24 @@ const VARIANTS = [
 // (gated in CSS), so the nine off-screen cards never animate. Index aligns to
 // SLIDES[i]; cycles every six slides.
 const AMBIENT = [
-  'ambient-1',
-  'ambient-2',
-  'ambient-3',
-  'ambient-4',
-  'ambient-5',
-  'ambient-6',
-  'ambient-1',
-  'ambient-2',
-  'ambient-3',
+  "ambient-1",
+  "ambient-2",
+  "ambient-3",
+  "ambient-4",
+  "ambient-5",
+  "ambient-6",
+  "ambient-1",
+  "ambient-2",
 ];
+
+// Demo videos per content slide, keyed by zero-based SLIDES index. A slide can
+// carry any number of demos; each renders its own labelled "Watch" button and
+// plays in the shared VideoModal. To add a video: import the asset above, then
+// append a `{ label, src }` entry under the target slide's index here.
+type Demo = { label: string; src: string };
+const SLIDE_DEMOS: Record<number, Demo[]> = {
+  6: [{ label: "Watch Mempalace Demo", src: demoMempalace }],
+};
 
 /* -------------------------------------------------------------------------- */
 /* Hero (slide 0)                                                             */
@@ -70,7 +84,7 @@ const AMBIENT = [
 const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
   <div
     class="slide-card enter-hero glass relative rounded-3xl px-10 sm:px-20 py-16 sm:py-20 max-w-4xl text-center overflow-hidden"
-    classList={{ 'is-active': props.active() }}
+    classList={{ "is-active": props.active() }}
   >
     {/* Inner top highlight for that real-glass sheen. */}
     <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
@@ -81,28 +95,28 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
 
     <p
       class="reveal text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-cyanGlow/80 mb-6"
-      style={{ 'transition-delay': props.active() ? '0.15s' : '0s' }}
+      style={{ "transition-delay": props.active() ? "0.15s" : "0s" }}
     >
       Enterprise Engineering Keynote
     </p>
 
     <h1
       class="reveal text-5xl sm:text-7xl font-extrabold tracking-tight leading-[1.05]"
-      style={{ 'transition-delay': props.active() ? '0.25s' : '0s' }}
+      style={{ "transition-delay": props.active() ? "0.25s" : "0s" }}
       aria-label="Claude in Action"
     >
       {/* Per-letter wave: each glyph carries its own gradient (a transformed
           inline-block breaks bg-clip-text inherited from a parent), bobs on an
           infinite loop, staggered by index. Animation + will-change are gated to
           .is-active in styles.css so the off-screen hero never stays promoted. */}
-      <For each={[...'Claude in Action']}>
+      <For each={[..."Claude in Action"]}>
         {(ch, i) => (
           <span
             class="wave-letter text-gradient"
-            style={{ 'animation-delay': `${i() * 0.08}s` }}
+            style={{ "animation-delay": `${i() * 0.08}s` }}
             aria-hidden="true"
           >
-            {ch === ' ' ? ' ' : ch}
+            {ch === " " ? " " : ch}
           </span>
         )}
       </For>
@@ -110,14 +124,14 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
 
     <p
       class="reveal mt-6 text-lg sm:text-2xl text-white/70 font-light max-w-2xl mx-auto"
-      style={{ 'transition-delay': props.active() ? '0.4s' : '0s' }}
+      style={{ "transition-delay": props.active() ? "0.4s" : "0s" }}
     >
       Scaling AI workflows for Enterprise Engineering
     </p>
 
     <div
       class="reveal mt-10 inline-flex items-center gap-2 px-5 py-2 rounded-full glass-pill text-sm text-white/60"
-      style={{ 'transition-delay': props.active() ? '0.55s' : '0s' }}
+      style={{ "transition-delay": props.active() ? "0.55s" : "0s" }}
     >
       <span class="w-1.5 h-1.5 rounded-full bg-emeraldGlow" />
       Presented by Huy Truong, Darick Nguyen
@@ -128,7 +142,11 @@ const HeroSlide: Component<{ active: Accessor<boolean> }> = (props) => (
 /* -------------------------------------------------------------------------- */
 /* Video modal                                                                 */
 /* -------------------------------------------------------------------------- */
-const VideoModal: Component<{ open: boolean; src: string; onClose: () => void }> = (props) => (
+const VideoModal: Component<{
+  open: boolean;
+  src: string;
+  onClose: () => void;
+}> = (props) => (
   <Show when={props.open}>
     <div
       class="fixed inset-0 z-50 bg-black flex items-center justify-center"
@@ -136,7 +154,10 @@ const VideoModal: Component<{ open: boolean; src: string; onClose: () => void }>
     >
       <button
         class="absolute top-4 right-4 z-10 grid place-items-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white cursor-pointer transition-colors"
-        onClick={(e) => { e.stopPropagation(); props.onClose(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          props.onClose();
+        }}
         aria-label="Close video"
       >
         <X size={20} />
@@ -162,14 +183,15 @@ const ContentSlide: Component<{
   ambient: string; // ambient-* drift class — slow Ken Burns on the bg photo
   image: string; // per-slide background art (Vite-resolved URL)
   active: Accessor<boolean>;
-  onWatchDemo?: () => void;
+  demos?: Demo[]; // zero or more demo videos for this slide
+  onPlay?: (src: string) => void; // open a demo in the shared VideoModal
 }> = (props) => {
   const Icon = props.slide.icon;
   return (
     <div
       class="slide-card glass relative rounded-3xl px-9 sm:px-14 py-11 sm:py-14 w-full max-w-4xl overflow-hidden flex flex-col min-h-[460px] sm:min-h-[520px]"
       classList={{
-        'is-active': props.active(),
+        "is-active": props.active(),
         [props.variant]: true,
         [props.ambient]: true,
       }}
@@ -178,7 +200,7 @@ const ContentSlide: Component<{
           Opacity + transform are owned by the amb-* keyframes (gated active). */}
       <div
         class="slide-bg-art absolute inset-0 bg-cover bg-center"
-        style={{ 'background-image': `url(${props.image})` }}
+        style={{ "background-image": `url(${props.image})` }}
         aria-hidden="true"
       />
       {/* Dark wash for contrast: keeps text + glass readable over any photo. */}
@@ -191,74 +213,88 @@ const ContentSlide: Component<{
 
       {/* Foreground content stays above the image + overlay layers. */}
       <div class="relative z-10 flex flex-col flex-1">
-
-      {/* Header: icon + slide number */}
-      <div class="flex items-start justify-between mb-7">
-        <div class="slide-icon grid place-items-center w-16 h-16 rounded-2xl glass-pill text-cyanGlow">
-          <Icon size={30} stroke-width={1.6} />
+        {/* Header: icon + slide number */}
+        <div class="flex items-start justify-between mb-7">
+          <div class="slide-icon grid place-items-center w-16 h-16 rounded-2xl glass-pill text-cyanGlow">
+            <Icon size={30} stroke-width={1.6} />
+          </div>
+          <span class="font-mono text-sm tracking-[0.25em] text-white/35 mt-2">
+            {pad(props.index)} / {pad(SLIDES.length)}
+          </span>
         </div>
-        <span class="font-mono text-sm tracking-[0.25em] text-white/35 mt-2">
-          {pad(props.index)} / 09
-        </span>
-      </div>
 
-      {/* Title */}
-      <h2
-        class="reveal text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white leading-tight mb-8 text-balance"
-        style={{ 'transition-delay': props.active() ? '0.12s' : '0s' }}
-      >
-        {props.slide.title}
-      </h2>
-
-      {/* Bullets — staggered */}
-      <ul class="space-y-4">
-        <For each={props.slide.bullets}>
-          {(bullet, i) => (
-            <li
-              class="reveal flex items-start gap-4"
-              style={{
-                'transition-delay': props.active()
-                  ? `${0.22 + i() * 0.08}s`
-                  : '0s',
-              }}
-            >
-              {/* Gradient marker */}
-              <span class="mt-2 shrink-0 w-2 h-2 rounded-full bg-gradient-to-br from-cyanGlow to-violetGlow shadow-[0_0_12px_rgba(103,232,249,0.6)]" />
-              <span class="text-lg sm:text-xl text-white/85 leading-relaxed">
-                {bullet}
-              </span>
-            </li>
-          )}
-        </For>
-      </ul>
-
-      {/* Spacer pushes insight pill to bottom regardless of bullet count */}
-      <div class="flex-1" />
-
-      {/* Key insight pill */}
-      <div
-        class="reveal mt-8 inline-flex items-center gap-3 pl-3 pr-6 py-3 rounded-full glass-pill"
-        style={{ 'transition-delay': props.active() ? '0.7s' : '0s' }}
-      >
-        <span class="grid place-items-center w-7 h-7 rounded-full bg-violetGlow/15 text-violetGlow">
-          <Lightbulb size={15} />
-        </span>
-        <span class="text-sm sm:text-base text-white/90">
-          <span class="text-violetGlow font-bold">Key Insight: </span>
-          {props.slide.insight}
-        </span>
-      </div>
-
-      <Show when={props.onWatchDemo}>
-        <button
-          class="reveal mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-pill text-sm text-white/90 hover:text-white cursor-pointer"
-          style={{ 'transition-delay': props.active() ? '0.82s' : '0s' }}
-          onClick={(e) => { e.stopPropagation(); props.onWatchDemo!(); }}
+        {/* Title */}
+        <h2
+          class="reveal text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white leading-tight mb-8 text-balance"
+          style={{ "transition-delay": props.active() ? "0.12s" : "0s" }}
         >
-          <Play size={14} class="text-cyanGlow" fill="currentColor" />
-          Watch Demo
-        </button>
-      </Show>
+          {props.slide.title}
+        </h2>
+
+        {/* Bullets — staggered */}
+        <ul class="space-y-4">
+          <For each={props.slide.bullets}>
+            {(bullet, i) => (
+              <li
+                class="reveal flex items-start gap-4"
+                style={{
+                  "transition-delay": props.active()
+                    ? `${0.22 + i() * 0.08}s`
+                    : "0s",
+                }}
+              >
+                {/* Gradient marker */}
+                <span class="mt-2 shrink-0 w-2 h-2 rounded-full bg-gradient-to-br from-cyanGlow to-violetGlow shadow-[0_0_12px_rgba(103,232,249,0.6)]" />
+                <span class="text-lg sm:text-xl text-white/85 leading-relaxed">
+                  {bullet}
+                </span>
+              </li>
+            )}
+          </For>
+        </ul>
+
+        {/* Spacer pushes insight pill to bottom regardless of bullet count */}
+        <div class="flex-1" />
+
+        {/* Key insight pill */}
+        <Show when={!!props.slide.insight}>
+          <div
+            class="reveal mt-8 inline-flex items-center gap-3 pl-3 pr-6 py-3 rounded-full glass-pill"
+            style={{ "transition-delay": props.active() ? "0.7s" : "0s" }}
+          >
+            <span class="grid place-items-center w-7 h-7 rounded-full bg-violetGlow/15 text-violetGlow">
+              <Lightbulb size={15} />
+            </span>
+            <span class="text-sm sm:text-base text-white/90">
+              <span class="text-violetGlow font-bold">Key Insight: </span>
+              {props.slide.insight}
+            </span>
+          </div>
+        </Show>
+
+        <Show when={props.demos?.length}>
+          <div class="flex flex-wrap gap-3">
+            <For each={props.demos}>
+              {(demo, i) => (
+                <button
+                  class="reveal mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-pill text-sm text-white/90 hover:text-white cursor-pointer"
+                  style={{
+                    "transition-delay": props.active()
+                      ? `${0.82 + i() * 0.08}s`
+                      : "0s",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.onPlay?.(demo.src);
+                  }}
+                >
+                  <Play size={14} class="text-cyanGlow" fill="currentColor" />
+                  {demo.label}
+                </button>
+              )}
+            </For>
+          </div>
+        </Show>
       </div>
     </div>
   );
@@ -270,7 +306,7 @@ const ContentSlide: Component<{
 const App: Component = () => {
   const [current, setCurrent] = createSignal(0);
   const [modalOpen, setModalOpen] = createSignal(false);
-  const [videoOpen, setVideoOpen] = createSignal(false);
+  const [activeVideo, setActiveVideo] = createSignal<string | null>(null);
 
   const goto = (i: number) => setCurrent(Math.max(0, Math.min(TOTAL - 1, i)));
   const next = () => goto(current() + 1);
@@ -278,28 +314,28 @@ const App: Component = () => {
 
   /* --- Keyboard navigation --------------------------------------------- */
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setVideoOpen(false);
+    if (e.key === "Escape") {
+      setActiveVideo(null);
       setModalOpen(false);
       return;
     }
-    if (modalOpen() || videoOpen()) return;
+    if (modalOpen() || activeVideo()) return;
 
     switch (e.key) {
-      case 'ArrowRight':
+      case "ArrowRight":
         next();
         break;
-      case 'ArrowLeft':
+      case "ArrowLeft":
         prev();
         break;
-      case ' ': // Space / Shift+Space
+      case " ": // Space / Shift+Space
         e.preventDefault();
         e.shiftKey ? prev() : next();
         break;
-      case 'Home':
+      case "Home":
         goto(0);
         break;
-      case 'End':
+      case "End":
         goto(TOTAL - 1);
         break;
       default:
@@ -312,7 +348,7 @@ const App: Component = () => {
   let startX = 0;
   let tracking = false;
   const onPointerDown = (e: PointerEvent) => {
-    if (e.pointerType === 'mouse') return; // mouse uses the nav, not swipe
+    if (e.pointerType === "mouse") return; // mouse uses the nav, not swipe
     startX = e.clientX;
     tracking = true;
   };
@@ -323,8 +359,8 @@ const App: Component = () => {
     if (Math.abs(dx) > 60) (dx < 0 ? next : prev)();
   };
 
-  onMount(() => window.addEventListener('keydown', onKey));
-  onCleanup(() => window.removeEventListener('keydown', onKey));
+  onMount(() => window.addEventListener("keydown", onKey));
+  onCleanup(() => window.removeEventListener("keydown", onKey));
 
   return (
     <main
@@ -342,7 +378,7 @@ const App: Component = () => {
           class="h-full bg-gradient-to-r from-cyanGlow via-violetGlow to-emeraldGlow shadow-[0_0_14px_rgba(192,132,252,0.7)]"
           style={{
             width: `${(current() / (TOTAL - 1)) * 100}%`,
-            transition: 'width 0.7s cubic-bezier(0.23,1,0.32,1)',
+            transition: "width 0.7s cubic-bezier(0.23,1,0.32,1)",
           }}
         />
       </div>
@@ -353,7 +389,7 @@ const App: Component = () => {
         style={{
           width: `${TOTAL * 100}vw`,
           transform: `translateX(-${current() * 100}vw)`,
-          transition: 'transform 0.7s cubic-bezier(0.23,1,0.32,1)',
+          transition: "transform 0.7s cubic-bezier(0.23,1,0.32,1)",
         }}
       >
         {/* Slide 0 — hero */}
@@ -372,7 +408,8 @@ const App: Component = () => {
                 ambient={AMBIENT[i()]}
                 image={SLIDE_IMAGES[i()]}
                 active={() => current() === i() + 1}
-                onWatchDemo={i() === 8 ? () => setVideoOpen(true) : undefined}
+                demos={SLIDE_DEMOS[i()]}
+                onPlay={setActiveVideo}
               />
             </section>
           )}
@@ -388,8 +425,12 @@ const App: Component = () => {
         onOpenGrid={() => setModalOpen(true)}
       />
 
-      {/* Demo video overlay */}
-      <VideoModal open={videoOpen()} src={demoMempalace} onClose={() => setVideoOpen(false)} />
+      {/* Demo video overlay — shared by every slide's demo buttons */}
+      <VideoModal
+        open={activeVideo() !== null}
+        src={activeVideo() ?? ""}
+        onClose={() => setActiveVideo(null)}
+      />
 
       {/* All-slides overview */}
       <AllSlidesModal

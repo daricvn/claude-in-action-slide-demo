@@ -1,136 +1,131 @@
-import type { Component } from 'solid-js';
+import type { Component } from "solid-js";
 import {
-  Radar,
-  Wand2,
-  Network,
+  Building2,
   Workflow,
   FolderGit2,
+  Network,
+  Layers,
   Coins,
+  MonitorPlay,
   BrainCircuit,
-  Map as MapIcon,
-  Route,
-} from 'lucide-solid';
+  MessageCircleQuestionMark,
+} from "lucide-solid";
 
-/** A single content slide (1–9). Slide 0 is the bespoke hero. */
+/** A single content slide (1–8). Slide 0 is the bespoke hero. */
 export interface Slide {
   /** Large lucide icon shown at the top of the card. */
-  icon: Component<{ size?: number; class?: string; 'stroke-width'?: number }>;
+  icon: Component<{ size?: number; class?: string; "stroke-width"?: number }>;
   title: string;
   bullets: string[];
-  insight: string;
+  insight?: string;
 }
 
 /**
- * Nine content slides. Copy is written for senior engineers working in
- * large / enterprise codebases — actionable, not fluff.
+ * Eight content slides, ordered to the talk agenda. Copy is written for senior
+ * engineers working in large / enterprise codebases — actionable, not fluff.
  */
 export const SLIDES: Slide[] = [
   {
-    icon: Radar,
-    title: 'Investigate Large Projects at Enterprise Scope',
+    icon: Building2,
+    title: "Why Enterprise-Scale AI Assistance Needs More Than Prompts",
     bullets: [
-      'Start from north-star files: ARCHITECTURE.md, README, package.json, tsconfig, CI/infra configs.',
-      'Search aggressively, then ask Claude to "explain this in the context of the whole system".',
-      'Map service boundaries and data flow before touching a single line.',
-      'Trace one real request end-to-end to ground your mental model in reality.',
-      'Build a glossary of domain terms and code ownership before you edit.',
+      "Prompts don’t scale: every session restarts from zero context.",
+      "Enterprise code spans repos, services, and years of decisions.",
+      "A one-off prompt can’t hold architecture, conventions, or ownership.",
+      "You need durable context, reusable workflows, and bounded agents.",
+      'Shift from "ask the model" to "engineer the system around it".',
     ],
-    insight: 'Understand the system’s shape before changing its substance.',
-  },
-  {
-    icon: Coins,
-    title: 'Skills to Optimise Token Usage',
-    bullets: [
-      'Return distilled answers, not raw file dumps.',
-      'Search narrowly and read the slice you need — not the whole file.',
-      'Compress sub-agent output before it re-enters the main context.',
-      'Prune stale context and summarize long threads aggressively.',
-      'Cache north-star facts in memory instead of re-deriving them.',
-    ],
-    insight: 'Tokens are budget — spend them on reasoning, not re-reading.',
-  },
-  {
-    icon: MapIcon,
-    title: 'ARCHITECTURE.md',
-    bullets: [
-      'One map of the system: boundaries, data flow, and key decisions.',
-      'Link to source-of-truth files instead of duplicating them.',
-      'Record trade-offs and rejected options, not just the final shape.',
-      'Keep it the agent’s first read — optimise for machine and human.',
-      'Update it in the same PR that changes the architecture.',
-    ],
-    insight: 'ARCHITECTURE.md is the highest-leverage file in the repo.',
-  },
-  {
-    icon: Route,
-    title: 'When to Use CLAUDE.md, Skills, or Rules',
-    bullets: [
-      'CLAUDE.md is always-on context — keep it under ~200 lines.',
-      'Past 200 lines, extract stable workflows into Skills.',
-      'Skills are invokable, reusable procedures with their own docs.',
-      'Rules and hooks are automated enforcement the harness runs, not you.',
-      'Link out from CLAUDE.md; don’t inline what you can reference.',
-    ],
-    insight: 'CLAUDE.md is a router, not a manual.',
-  },
-  {
-    icon: Wand2,
-    title: 'Adjust the Skill — Don’t Just Use It',
-    bullets: [
-      'Treat skills as living templates: fork and tune them to your stack.',
-      'Encode team conventions into the skill itself, not into every prompt.',
-      'When a skill drifts, patch its instructions — never just the output.',
-      'Version skills like code: review diffs and keep a changelog.',
-      'Promote a repeated ad-hoc prompt into a durable, named skill.',
-    ],
-    insight: 'A skill you never edit is a skill you don’t yet trust.',
-  },
-  {
-    icon: Network,
-    title: 'Spawn Sub-Agents for Corresponding Tasks',
-    bullets: [
-      'Decompose by boundary: one agent per service, concern, or repo.',
-      'Give each agent a narrow brief and crisp success criteria.',
-      'Run read-only investigators in parallel; serialize the writers.',
-      'Pass distilled findings up the chain, not raw transcripts.',
-      'Verify every sub-agent’s "done" — re-run its gate yourself.',
-    ],
-    insight: 'Sub-agents multiply throughput only when scope is bounded.',
+    insight: "At scale, the bottleneck is context, not the prompt.",
   },
   {
     icon: Workflow,
-    title: 'Dynamic Workflows',
+    title: "Building Reusable Claude Workflows for Large Projects",
     bullets: [
-      'Let the plan branch on findings, not follow a fixed script.',
-      'Gate each phase: investigate → plan → implement → verify.',
-      'Re-plan the moment evidence contradicts your assumption.',
-      'Capture decisions inline so the workflow stays resumable.',
-      'Match effort to blast radius: shallow for reversible, deep for risky.',
+      "Promote repeated prompts into named, versioned Skills.",
+      "Gate the work in phases: investigate → plan → implement → verify.",
+      "Encode team conventions into the workflow, not into every message.",
+      "Let the plan branch on findings instead of following a fixed script.",
+      "Review workflow diffs like code; keep a changelog.",
     ],
-    insight: 'The workflow adapts to the code — not the code to the workflow.',
+    insight: "A workflow you reuse beats a prompt you rewrite.",
   },
   {
     icon: FolderGit2,
-    title: 'Use Claude in Multi-Repo Environments',
+    title: "Investigating Multi-Repo Systems Effectively",
     bullets: [
-      'Keep a workspace manifest: repos, owners, and entry points.',
-      'Resolve cross-repo contracts — APIs, schemas, events — first.',
-      'Change the producer and every consumer in lockstep; never half-ship.',
-      'Use worktrees or parallel clones to isolate concurrent changes.',
-      'Centralize shared conventions in one place every agent can read.',
+      "Start from north-star files: ARCHITECTURE.md, README, configs.",
+      "Keep a workspace manifest: repos, owners, and entry points.",
+      "Resolve cross-repo contracts — APIs, schemas, events — first.",
+      "Trace one real request end-to-end across services to ground reality.",
+      "Map service boundaries and data flow before touching a line.",
     ],
-    insight: 'In multi-repo, the contract is the codebase.',
+    insight: "In multi-repo, the contract is the codebase.",
+  },
+  {
+    icon: Network,
+    title: "Using Sub-Agents for Dynamic Task Orchestration",
+    bullets: [
+      "Decompose by boundary: one agent per service, concern, or repo.",
+      "Give each agent a narrow brief and crisp success criteria.",
+      "Run read-only investigators in parallel; serialize the writers.",
+      "Pass distilled findings up the chain, not raw transcripts.",
+      'Verify every sub-agent’s "done" — re-run its gate yourself.',
+    ],
+    insight: "Sub-agents multiply throughput only when scope is bounded.",
+  },
+  {
+    icon: Layers,
+    title: "Organizing Context: Files, Skills, Rules & Memory",
+    bullets: [
+      "ARCHITECTURE.md — one map of boundaries, data flow, and decisions.",
+      "CLAUDE.md — always-on router: keep it lean, link don’t inline.",
+      "Skills — invokable, reusable procedures with their own docs.",
+      "Rules & hooks — automated enforcement the harness runs, not you.",
+      "Memory MCP (mempalace) — persist the *why* across sessions.",
+    ],
+    insight: "Context engineering is the real interface to the model.",
+  },
+  {
+    icon: Coins,
+    title: "Optimizing Tokens & Avoiding Context Bloat",
+    bullets: [
+      "Return distilled answers, not raw file dumps.",
+      "Search narrowly and read the slice you need — not the whole file.",
+      "Compress sub-agent output before it re-enters the main context.",
+      "Prune stale context and summarize long threads aggressively.",
+      "Cache north-star facts in memory instead of re-deriving them.",
+      "Caveman skill — terse output style, ~75% fewer tokens, full accuracy.",
+    ],
+    insight: "Tokens are budget — spend them on reasoning, not re-reading.",
+  },
+  {
+    icon: MonitorPlay,
+    title: "Demo: AI Web Slide — Workflow in Action",
+    bullets: [
+      "This deck was built by the workflow it describes.",
+      "Skills + sub-agents scaffolded slides, layout, and animation.",
+      "Memory MCP held design tokens and architecture across sessions.",
+      "Watch the loop run live: investigate → plan → implement → verify.",
+      "The same pattern scales from a slide deck to an enterprise monorepo.",
+    ],
+    insight: "The workflow is the product — watch it build itself.",
   },
   {
     icon: BrainCircuit,
-    title: 'Memory MCP Servers (mempalace)',
+    title: "Mindset Shift & Key Takeaways",
     bullets: [
-      'Persist durable facts: architecture, decisions, owners, gotchas.',
-      'Store the *why*, not just the what — rationale outlives the code.',
-      'Recall before answering questions about past work or decisions.',
-      'Link related memories into a navigable knowledge graph.',
-      'Verify recalled facts against the code — memory goes stale.',
+      "Stop treating Claude as a prompt tool — start engineering the entire system around it.",
+      "Build reusable workflows, not one-off prompts.",
+      "Master context: Clean threads, strong ARCHITECTURE.md, CLAUDE.md, and Mempalace.",
+      "Use sub-agents + dynamic orchestration instead of monolithic chats.",
+      "Optimize ruthlessly — tokens, structure, and verification are non-negotiable.",
+      "Treat Claude as a powerful junior colleague you manage, not a magic oracle.",
     ],
-    insight: 'Memory turns every session into a continuation, not a restart.',
+    insight: "Scale comes from the system you build around the model.",
+  },
+  {
+    icon: MessageCircleQuestionMark,
+    title: "Questions & Answers",
+    bullets: [],
   },
 ];

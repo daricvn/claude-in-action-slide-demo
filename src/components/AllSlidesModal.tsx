@@ -5,7 +5,7 @@ import { SLIDES } from '../slides';
 /**
  * Glass overlay listing every slide as a clickable mini-card. Clicking a card
  * jumps to that slide and closes the modal. The hero (slide 0) is shown first,
- * followed by the nine content slides.
+ * followed by the eight content slides.
  */
 const AllSlidesModal: Component<{
   open: boolean;
