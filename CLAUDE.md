@@ -55,6 +55,40 @@ To add a video to any slide:
 5. `VideoModal` closes on: X button (top-right), clicking the dark overlay, or
    Escape key (resets `activeVideo` to `null`). No auto-close on video end.
 
+## Adding or replacing slides
+
+Four parallel arrays in `App.tsx` must stay index-aligned with each other and with `SLIDE_ICONS[]` in `slides.ts`:
+
+| Array | Purpose | File |
+|-------|---------|------|
+| `SLIDE_IMAGES[]` | Background photo per slide | `App.tsx` |
+| `VARIANTS[]` | Entrance transition class per slide | `App.tsx` |
+| `AMBIENT[]` | Slow Ken Burns drift class per slide | `App.tsx` |
+| `SLIDE_ICONS[]` | Icon component per slide | `slides.ts` |
+
+Plus one `SlideText` entry per locale in `i18n.ts`.
+
+### Adding a new slide
+
+1. **Image** — drop photo into `src/assets/` (e.g. `slide-10.jpg`), import it in `App.tsx`, and append to `SLIDE_IMAGES[]`.
+2. **Icon** — append an icon from `lucide-solid` to `SLIDE_ICONS[]` in `slides.ts`; increment `SLIDE_COUNT`.
+3. **Text** — append a `SlideText` (`{ title, bullets, insight? }`) to both `en.slides` and `vi.slides` in `i18n.ts`. Index must match the icon.
+4. **Entrance transition** — append one `.enter-*` class name to `VARIANTS[]` in `App.tsx`. Available keyframes (defined in `styles.css`): `enter-rise`, `enter-zoom`, `enter-flipx`, `enter-door`, `enter-curtain`, `enter-tilt`, `enter-focus`, `enter-unfold`, `enter-glide`. To add a new transition: write its `@keyframes enter-<name>` in `styles.css`, wire up `.enter-<name>.slide-card.is-active` and `.enter-<name>.slide-card.is-exiting` CSS rules following the pattern of existing variants, then use the class name in `VARIANTS[]`.
+5. **Ambient animation** — append one `ambient-*` class to `AMBIENT[]`. Six flavours cycle (`ambient-1`–`ambient-6`); pick any or repeat. Each runs its `@keyframes amb-*` **only while `.is-active`** — off-screen slides never animate (perf constraint). To add a new ambient flavour: write `@keyframes amb-<n>` in `styles.css` and add `.ambient-<n>.is-active .slide-bg-art { animation-name: amb-<n>; animation-duration: Xs; }`. Keep scale ≥ 1.05 and pan offsets within scale headroom so `bg-cover` never exposes glass beneath.
+
+### Replacing a slide's content
+
+- **Text only** — edit the matching index in `en.slides` / `vi.slides` in `i18n.ts`.
+- **Image** — swap the import and update `SLIDE_IMAGES[i]` in `App.tsx`.
+- **Transition** — change `VARIANTS[i]` to a different `.enter-*` class.
+- **Ambient** — change `AMBIENT[i]` to a different `ambient-*` class.
+- **Icon** — replace `SLIDE_ICONS[i]` in `slides.ts` (no count change needed).
+- Keep all five arrays at the same length as `SLIDE_COUNT`.
+
+### Full slide replacement (rewrite all content)
+
+Replace every entry in `SLIDE_IMAGES[]`, `VARIANTS[]`, `AMBIENT[]`, `SLIDE_ICONS[]`, and both locale `slides[]` arrays simultaneously. Update `SLIDE_COUNT` if the count changes. Verify array lengths match before building.
+
 ## Rules
 - UnoCSS preset is `presetWind3` — needs blur/shadow/ring/gradient utilities. Not `presetMini`.
 - Background layers (`Orbs`, `ParticleField`) sit at `z-0`. Never negative z — drops them behind `body`, deck goes black.
