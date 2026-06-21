@@ -38,6 +38,6 @@ export default defineConfig({
       'bg-white/8 backdrop-blur-md border border-white/10 ring-1 ring-white/5',
     // Gradient text used for titles.
     'text-gradient':
-      'bg-gradient-to-r from-cyanGlow via-white to-violetGlow bg-clip-text text-transparent',
+      'bg-gradient-to-b from-cyanGlow via-white to-violetGlow bg-clip-text text-transparent',
   },
 });
