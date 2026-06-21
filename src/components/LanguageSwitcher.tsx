@@ -91,7 +91,7 @@ const LanguageSwitcher: Component = () => {
           e.stopPropagation();
           setOpen((o) => !o);
         }}
-        class="glass-pill grid place-items-center w-11 h-11 rounded-full transition-all duration-300 hover:bg-white/10 hover:scale-105 cursor-pointer"
+        class="glass-pill grid place-items-center w-11 h-11 rounded-full transition-all duration-300 shadow-lg shadow-black/40 hover:bg-white/10 hover:scale-105 hover:shadow-cyanGlow/20 hover:border-white/20 cursor-pointer"
         aria-label={t().ui.changeLanguage}
         aria-haspopup="listbox"
         aria-expanded={open()}
@@ -101,7 +101,7 @@ const LanguageSwitcher: Component = () => {
 
       <Show when={open()}>
         <div
-          class="absolute top-13 left-0 glass rounded-2xl p-2 flex flex-col gap-1 min-w-[10.5rem]"
+          class="absolute top-13 left-0 bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl shadow-black/60 ring-1 ring-white/8 rounded-2xl p-2 flex flex-col gap-1 min-w-[10.5rem] transition-all duration-200 origin-top-left"
           role="listbox"
         >
           <For each={LOCALES}>
@@ -111,13 +111,13 @@ const LanguageSwitcher: Component = () => {
                   setLocale(l.code);
                   setOpen(false);
                 }}
-                class="flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-colors hover:bg-white/10 cursor-pointer"
-                classList={{ "bg-white/10": l.code === locale() }}
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-left bg-transparent transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-1 focus-visible:ring-cyanGlow/40 cursor-pointer"
+                classList={{ "bg-white/15 ring-1 ring-cyanGlow/25": l.code === locale() }}
                 role="option"
                 aria-selected={l.code === locale()}
               >
                 <Flag code={l.code} class="w-6 h-4 shrink-0" />
-                <span class="text-sm text-white/90">{l.label}</span>
+                <span class="text-sm font-medium text-white/95 tracking-wide">{l.label}</span>
               </button>
             )}
           </For>
