@@ -162,10 +162,7 @@ const en: Dict = {
     {
       title: "Demo: System Engineering in Action",
       bullets: [
-        "The Payoff: 1 Jira ticket, 11 repositories, zero prior context, PRs merged.",
-        "Watch the loop run live: investigate → plan → implement → verify.",
-        "Mempalace MCP holding cross-session tokens and state rules dynamically.",
-        "The pattern scales seamlessly from this slide deck up to an enterprise monorepo.",
+        
       ],
       insight: "The workflow is the product—watch it build itself.",
     },
@@ -299,10 +296,7 @@ const vi: Dict = {
     {
       title: "Demo: Kỹ nghệ Hệ thống trong Thực tế",
       bullets: [
-        "Thành quả: 1 ticket Jira, 11 repositories, 0 bối cảnh ban đầu, PR đã merged.",
-        "Theo dõi trực tiếp vòng lặp: điều tra → lập kế hoạch → thực thi → xác minh.",
-        "Mempalace MCP duy trì các token thiết kế và quy tắc trạng thái một cách động xuyên phiên.",
-        "Mô hình mở rộng linh hoạt: từ một slide deck này cho đến một monorepo doanh nghiệp.",
+       
       ],
       insight: "Quy trình chính là sản phẩm—hãy xem nó tự vận hành và xây dựng.",
     },
