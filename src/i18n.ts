@@ -307,7 +307,7 @@ const vi: Dict = {
       insight: "Quy trình chính là sản phẩm—hãy xem nó tự vận hành và xây dựng.",
     },
     {
-      title: "Thay đổi Tư duy & Điểm rút ra Cốt lõi",
+      title: "Thay đổi Tư duy & bài học rút ra",
       bullets: [
         "Cô lập các phân đoạn ngữ cảnh để chất lượng phản hồi không bị suy giảm theo thời gian.",
         "Đặt đúng dữ liệu vào đúng tầng kiến trúc (CLAUDE.md vs. Skills vs. Rules vs. Memory).",
