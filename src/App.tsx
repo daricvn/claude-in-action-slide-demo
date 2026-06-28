@@ -61,6 +61,7 @@ const VARIANTS = [
   "enter-rise",
   "enter-zoom",
   "enter-curtain",
+  "enter-glide",
 ];
 
 // Slow "Ken Burns" drift for each slide's background photo: scale + pan +
@@ -79,6 +80,9 @@ const AMBIENT = [
   "ambient-1",
   "ambient-2",
   "ambient-3",
+  "ambient-4",
+  "ambient-5",
+  "ambient-6",
 ];
 
 // Demo videos per content slide, keyed by zero-based slide index. A slide can
