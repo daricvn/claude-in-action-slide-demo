@@ -1,5 +1,6 @@
 import type { Component } from "solid-js";
 import {
+  LayoutList,
   Building2,
   Workflow,
   FolderGit2,
@@ -27,6 +28,7 @@ export type IconComponent = Component<{
  * locale in `i18n.ts` + a `VARIANTS[]` entry in `App.tsx`. Keep arrays aligned.
  */
 export const SLIDE_ICONS: IconComponent[] = [
+  LayoutList,
   Building2,
   Workflow,
   FolderGit2,

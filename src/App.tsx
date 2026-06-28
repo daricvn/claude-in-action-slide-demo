@@ -25,10 +25,12 @@ import slide6 from "./assets/slide-6.jpg";
 import slide7 from "./assets/slide-7.jpg";
 import slide8 from "./assets/slide-8.jpg";
 import slide9 from "./assets/slide-9.jpg";
+import slideAnimation from "./assets/slide-animation.gif";
 import demoMempalace from "./assets/demo-mempalace.mp4";
 
 // Per-content-slide background art. Index i maps to SLIDES[i] (slide i+1).
 const SLIDE_IMAGES = [
+  slideAnimation,
   slide1,
   slide2,
   slide3,
@@ -47,6 +49,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 // defined in styles.css: rise, zoom, 3D flip, door, curtain, tilt, focus-blur,
 // unfold. The hero uses .enter-hero.
 const VARIANTS = [
+  "enter-unfold",
   "enter-rise",
   "enter-zoom",
   "enter-flipx",
@@ -66,6 +69,7 @@ const VARIANTS = [
 // (gated in CSS), so the nine off-screen cards never animate. Index aligns to
 // SLIDES[i]; cycles every six slides.
 const AMBIENT = [
+  "ambient-6",
   "ambient-1",
   "ambient-2",
   "ambient-3",
@@ -84,7 +88,7 @@ const AMBIENT = [
 // is localized — one string per Locale (resolved via `locale()` at render).
 type Demo = { label: Record<Locale, string>; src: string };
 const SLIDE_DEMOS: Record<number, Demo[]> = {
-  8: [
+  9: [
     {
       label: {
         en: "Watch Mempalace Demo",

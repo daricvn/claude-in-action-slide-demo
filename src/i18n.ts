@@ -68,6 +68,14 @@ const en: Dict = {
     changeLanguage: "Change language",
   },
   slides: [
+    {
+      title: "Agenda",
+      bullets: [
+        "Part 1 — Foundation & System Design",
+        "Part 2 — Technical Deep Dive & Tooling",
+        "Part 3 — Optimization, Demo & Takeaways",
+      ],
+    },
     // ==========================================
     // PART 1: FOUNDATION & SYSTEM DESIGN (DARICK)
     // ==========================================
@@ -202,6 +210,14 @@ const vi: Dict = {
     changeLanguage: "Đổi ngôn ngữ",
   },
   slides: [
+    {
+      title: "Chương trình",
+      bullets: [
+        "Phần 1 — Nền tảng & Thiết kế Hệ thống",
+        "Phần 2 — Kỹ thuật Chuyên sâu & Công cụ",
+        "Phần 3 — Tối ưu hóa, Demo & Tổng kết",
+      ],
+    },
     // ==========================================
     // PHẦN 1: NỀN TẢNG & KIẾN TRÚC NGỮ CẢNH (DARICK)
     // ==========================================
