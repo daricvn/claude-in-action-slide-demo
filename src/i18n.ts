@@ -161,6 +161,7 @@ const en: Dict = {
       title: "Optimizing Tokens & Ruthless Compression",
       bullets: [
         "Demand compressed, high-signal summaries from sub-agents before injection.",
+        "/caveman ultra: max compression — drop politeness, keep signal.",
         "/ponytail ultra: lazy senior dev mode — minimum code, maximum signal, zero ceremony.",
         "Normal: 'I'd be happy to help! The error occurs because the token has expired...'",
         "Ultra: 'Token expired. Fix TTL. Or just delete the feature.'",
@@ -303,6 +304,7 @@ const vi: Dict = {
       title: "Tối ưu hóa Token & Nén dữ liệu cực đoan",
       bullets: [
         "Yêu cầu sub-agent trả về tóm tắt cô đọng trước khi nạp lại vào luồng chính.",
+        "/caveman ultra: nén tối đa — bỏ lễ nghi, giữ tín hiệu.",
         "/ponytail ultra: chế độ senior lười biếng — ít code nhất, tín hiệu cao nhất, không lễ nghi.",
         "Thông thường: 'Tôi rất vui được trợ giúp! Lỗi này xảy ra do token đã hết hạn...'",
         "Ultra: 'Token hết hạn. Sửa TTL. Hoặc xóa tính năng đó đi.'",
