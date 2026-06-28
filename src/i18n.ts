@@ -68,105 +68,116 @@ const en: Dict = {
     changeLanguage: "Change language",
   },
   slides: [
+    // ==========================================
+    // PART 1: FOUNDATION & SYSTEM DESIGN (DARICK)
+    // ==========================================
     {
       title: "Why Enterprise-Scale AI Assistance Needs More Than Prompts",
       bullets: [
         "Prompts don’t scale: every session restarts from zero context.",
         "Enterprise code spans repos, services, and years of decisions.",
         "A one-off prompt can’t hold architecture, conventions, or ownership.",
-        "You need durable context, reusable workflows, and bounded agents.",
-        'Shift from "ask the model" to "engineer the system around it".',
+        "Shift from 'ask the model' to 'engineer the system around it'.",
       ],
-      insight: "At scale, the bottleneck is context, not the prompt.",
+      insight: "At scale, the bottleneck is context window degradation, not the prompt.",
     },
     {
-      title: "Building Reusable Claude Workflows for Large Projects",
+      title: "Building Reusable Claude Workflows (Skills)",
       bullets: [
-        "Turn repeated prompts into named, versioned workflows (Skills)",
-        "Structure phases clearly: Investigate → Plan → Implement → Verify",
-        "Encode team standards once in the workflow, not in every message",
-        "Make workflows adaptive — let them branch based on findings",
-        "Treat workflows like code: version them, review diffs, maintain changelog",
+        "Turn repeated processes into named, versioned workflows (Skills).",
+        "Isolate procedures like Git conventions (branch/commit/PR) from daily chat tokens.",
+        "Use configuration frontmatter to declare execution safety and model invocation boundaries.",
+        "Treat workflows like code: version them, review diffs, maintain changelogs.",
       ],
-      insight:
-        "A reusable workflow beats rewriting prompts. Try Caveman + NeoLabHQ/context-engineering-kit.",
+      insight: "Procedures belong in automated skills, never inline in CLAUDE.md.",
     },
     {
-      title: "Investigating Multi-Repo Systems Effectively",
+      title: "Durable Experience Memory Systems",
       bullets: [
-        "Start from north-star files: ARCHITECTURE.md, README, configs.",
-        "Keep a workspace manifest: repos, owners, and entry points.",
-        "Resolve cross-repo contracts — APIs, schemas, events — first.",
-        "Trace one real request end-to-end across services to ground reality.",
-        "Map service boundaries and data flow before touching a line.",
+        "Human-curated learning: you explicitly decide what lessons are worth saving.",
+        "Retrieval-first architecture: a lean rule fetches memory only when relevant.",
+        "Avoids CLAUDE.md bloat: protects the 200-line limit from context rot.",
+        "Mempalace MCP: persist structural data and historical design tokens.",
       ],
-      insight: "In multi-repo, the contract is the codebase.",
+      insight: "Build a lightweight search layer over context instead of dumping text into flat files.",
+    },
+
+    // ==========================================
+    // PART 2: TECHNICAL DEEP DIVE (HUY)
+    // ==========================================
+    {
+      title: "Semantic Codebase Navigation at Scale",
+      bullets: [
+        "Progressive disclosure: load structure on demand, never the entire repo.",
+        "Source Indexer: pre-computes semantic map and architecture hooks.",
+        "Source Navigator: drills directly into code without repetitive directory scans.",
+        "Tradeoff: enforce a strict depth limit to preserve token budget.",
+      ],
+      insight: "A two-level context graph beats rewriting prompts or running endless greps.",
     },
     {
-      title: "Using Sub-Agents for Dynamic Task Orchestration",
+      title: "Tiered Sub-Agent Pipelines",
       bullets: [
-        "Decompose by boundary: one agent per service, layer, or repo",
-        "Give each a narrow scope and clear success criteria",
-        "Run investigators in parallel, serialize writers",
-        "Pass distilled summaries up, never raw output",
-        "Always verify 'done' yourself — never fully trust",
+        "Model routing as policy: match model reasoning capacity to task difficulty.",
+        "Phase 1 (Haiku): cheap, rapid discovery and Jira ticket parsing.",
+        "Phase 2 (Sonnet): high-intelligence architectural reasoning and planning.",
+        "Phase 3 (Sonnet): clean, isolated context window for final execution.",
       ],
-      insight:
-        "Well-bounded sub-agents multiply power. Loose ones create chaos and explode token usage.",
+      insight: "Isolate context. Later stages inherit distilled summaries, not noisy exploration text.",
     },
     {
-      title: "Organizing Context: Files, Workflows, Rules & Memory",
+      title: "Advanced Orchestration: Fan-Out & Debate",
       bullets: [
-        "ARCHITECTURE.md — one map of boundaries, data flow, and decisions.",
-        "CLAUDE.md — always-on router: keep it lean, link don’t inline.",
-        "Workflows — invokable, reusable procedures with their own docs.",
-        "Rules & hooks — automated enforcement the harness runs, not you.",
-        "Memory MCP (mempalace) — persist the *why* across sessions.",
+        "Parallel Fan-Out: deploy multiple independent sub-agents for concurrent tasks.",
+        "Strict boundary condition: tasks must have zero shared state or file conflict risks.",
+        "Adversarial Debate: two separate sub-agents argue opposing approaches.",
+        "Removes self-preferential bias structurally instead of relying on model self-correction.",
       ],
-      insight: "Context engineering is the real interface to the model.",
+      insight: "Dynamic workflows script the loop and synthesis steps deterministically.",
     },
     {
-      title: "Optimizing Tokens & Avoiding Context Bloat",
+      title: "The MCP Ecosystem: Connecting Systems of Record",
       bullets: [
-        "Demand distilled answers, never raw dumps",
-        "Search narrowly — load only the needed slice",
-        "Compress sub-agent outputs before re-injecting",
-        "Cache stable facts in Mempalace",
-        "Master Caveman workflow: terse, high-signal output",
+        "Reach outside the filesystem without manual context copy-pasting.",
+        "Jira MCP: authoritative context for work-tracking and requirements.",
+        "GitHub MCP: live repository access, code reviews, and PR orchestration.",
+        "Confluence MCP: automated policy, organizational guardrails, and compliance.",
       ],
-      insight: "Tokens are budget — spend them on reasoning, not re-reading.",
+      insight: "Tool priority: prefer specialized internal MCPs over generic web searches.",
+    },
+
+    // ==========================================
+    // PART 3: OPTIMIZATION & WRAP-UP (ANY)
+    // ==========================================
+    {
+      title: "Optimizing Tokens & Ruthless Compression",
+      bullets: [
+        "Demand compressed, high-signal summaries from sub-agents before injection.",
+        "/caveman ultra: max compression mode to eliminate politeness and filler text.",
+        "Normal: 'I'd be happy to help! The error occurs because the token has expired...'",
+        "Ultra: 'Token expired. Fix TTL.'",
+      ],
+      insight: "Tokens are budget—spend them on complex reasoning, not re-reading conversational fluff.",
     },
     {
-      title: "Demo: AI Web Slide — Workflow in Action",
+      title: "Demo: System Engineering in Action",
       bullets: [
-        "This slide was built by using workflows.",
-        "Workflows + sub-agents scaffolded slides, layout, and animation.",
-        "Memory MCP held design tokens and architecture across sessions.",
+        "The Payoff: 1 Jira ticket, 11 repositories, zero prior context, PRs merged.",
         "Watch the loop run live: investigate → plan → implement → verify.",
-        "The same pattern scales from a slide deck to an enterprise monorepo.",
+        "Mempalace MCP holding cross-session tokens and state rules dynamically.",
+        "The pattern scales seamlessly from this slide deck up to an enterprise monorepo.",
       ],
-      insight: "The workflow is the product — watch it build itself.",
+      insight: "The workflow is the product—watch it build itself.",
     },
     {
       title: "Mindset Shift & Key Takeaways",
       bullets: [
-        "Engineer the system around Claude, not just prompt it",
-        "Build reusable workflows instead of one-off prompts",
-        "Master context: ARCHITECTURE.md, CLAUDE.md, Workflows & Mempalace",
-        "Use bounded sub-agents + ruthless token optimization",
-        "Treat Claude as a junior colleague you manage, not magic",
+        "Isolate context window segments so quality does not degrade over time.",
+        "Put the right data in the right layer (CLAUDE.md vs. Skills vs. Rules vs. Memory).",
+        "Parallelize tasks aggressively wherever dependencies allow.",
+        "Treat Claude as a junior colleague you manage with systems, not magic.",
       ],
       insight: "Scale comes from the system you build around the model.",
-    },
-    {
-      title: "Fun to Know",
-      bullets: [
-        '/caveman ultra — max compression. Normal: "I\'d be happy to help! The error likely occurs because the token has expired and…" → Ultra: "Token expired. Fix TTL."',
-        "Cavecrew — dynamic specialist sub-agents: builder, investigator, reviewer.",
-        "NeoLabHQ/context-engineering-kit — architecture, TDD & brainstorming templates.",
-        '"Hack" Opus: inject Fable 5 system prompt to unlock its full reasoning — https://github.com/sgup/ai/blob/main/Fable5.md',
-      ],
-      insight: "The ecosystem around Claude moves fast — stay curious.",
     },
     {
       title: "Questions & Answers",
@@ -194,105 +205,116 @@ const vi: Dict = {
     changeLanguage: "Đổi ngôn ngữ",
   },
   slides: [
+    // ==========================================
+    // PHẦN 1: NỀN TẢNG & KIẾN TRÚC NGỮ CẢNH (DARICK)
+    // ==========================================
     {
-      title: "Vì sao Trợ lý AI quy mô Doanh nghiệp cần nhiều hơn Prompt",
+      title: "Tại sao Prompt đơn thuần là chưa đủ ở quy mô Doanh nghiệp",
       bullets: [
-        "Prompt không mở rộng được: mỗi phiên bắt đầu lại từ con số không.",
-        "Mã nguồn doanh nghiệp trải khắp nhiều repo, dịch vụ và nhiều năm quyết định.",
-        "Một prompt đơn lẻ không thể nắm giữ kiến trúc, quy ước hay quyền sở hữu.",
-        "Bạn cần ngữ cảnh bền vững, workflows và agent có giới hạn.",
-        'Chuyển từ "hỏi mô hình" sang "xây dựng hệ thống quanh nó".',
+        "Prompt không thể mở rộng: mỗi phiên làm việc đều phải bắt đầu từ số 0.",
+        "Mã nguồn doanh nghiệp trải dài qua nhiều repo, service và hàng năm lịch sử.",
+        "Một prompt đơn lẻ không chứa nổi kiến trúc, quy chuẩn hay quyền sở hữu.",
+        "Dịch chuyển tư duy: từ 'hỏi mô hình' sang 'thiết lập hệ thống quanh mô hình'.",
       ],
-      insight: "Ở quy mô lớn, nút thắt là ngữ cảnh, không phải prompt.",
+      insight: "Ở quy mô lớn, nút thắt cổ chai nằm ở ngữ cảnh (context), không phải prompt.",
     },
     {
-      title: "Xây dựng Workflows cho Claude trong Dự án Lớn",
+      title: "Xây dựng Quy trình Claude tái sử dụng (Skills)",
       bullets: [
-        "Biến prompt lặp lại thành Workflows có tên và phiên bản",
-        "Phân chia giai đoạn rõ ràng: Khảo sát → Lập kế hoạch → Triển khai → Kiểm chứng",
-        "Mã hóa tiêu chuẩn nhóm một lần trong workflow, không phải mỗi tin nhắn",
-        "Làm workflow linh hoạt — cho phép rẽ nhánh theo phát hiện",
-        "Đối xử với workflow như mã: đánh phiên bản, soát diff, duy trì changelog",
+        "Đóng gói các tác vụ lặp lại thành các quy trình có tên và phiên bản (Skills).",
+        "Tách biệt các quy trình như Git convention (branch/commit/PR) khỏi token trò chuyện hàng ngày.",
+        "Sử dụng cấu hình frontmatter để kiểm soát quyền thực thi và ranh giới gọi mô hình.",
+        "Quản lý quy trình như code: quản lý phiên bản, duyệt diff và cập nhật changelog.",
       ],
-      insight:
-        "Workflows hơn hẳn viết lại prompt. Thử Caveman + NeoLabHQ/context-engineering-kit.",
+      insight: "Quy trình xử lý thuộc về Skill tự động, không nhồi nhét vào CLAUDE.md.",
     },
     {
-      title: "Khảo sát Hệ thống Đa-Repo Hiệu quả",
+      title: "Hệ thống lưu trữ Trải nghiệm (Durable Experience Memory)",
       bullets: [
-        "Bắt đầu từ các file định hướng: ARCHITECTURE.md, README, cấu hình.",
-        "Giữ một bản kê workspace: repo, chủ sở hữu và điểm vào.",
-        "Giải quyết hợp đồng liên-repo — API, schema, sự kiện — trước tiên.",
-        "Lần theo một request thật xuyên suốt các dịch vụ để bám sát thực tế.",
-        "Vẽ ranh giới dịch vụ và luồng dữ liệu trước khi chạm một dòng mã.",
+        "Ghi nhận có chọn lọc: chính bạn quyết định bài học nào đáng lưu trữ.",
+        "Kiến trúc ưu tiên truy vấn (Retrieval-first): luật tối giản, chỉ nạp bộ nhớ khi cần thiết.",
+        "Tránh phình to CLAUDE.md: bảo vệ giới hạn 200 dòng để ngăn suy giảm chất lượng ngữ cảnh.",
+        "Mempalace MCP: lưu giữ dữ liệu cấu trúc và các design token xuyên suốt các phiên.",
       ],
-      insight: "Trong đa-repo, hợp đồng chính là mã nguồn.",
+      insight: "Xây dựng tầng tìm kiếm mỏng trên ngữ cảnh thay vì ném text vào các file phẳng.",
+    },
+
+    // ==========================================
+    // PHẦN 2: THỰC THI & CÔNG CỤ SÂU (HUY)
+    // ==========================================
+    {
+      title: "Điều hướng Codebase lớn bằng Semantic Navigation",
+      bullets: [
+        "Tiết lộ tăng tiến (Progressive disclosure): tải cấu trúc theo nhu cầu, không tải toàn bộ repo.",
+        "Source Indexer: tính toán trước bản đồ ngữ nghĩa và các điểm neo kiến trúc.",
+        "Source Navigator: đi thẳng vào file code mục tiêu, bỏ qua việc quét thư mục lặp đi lặp lại.",
+        "Đánh đổi thiết kế: giới hạn độ sâu (depth limit) nghiêm ngặt để tiết kiệm token.",
+      ],
+      insight: "Một đồ thị ngữ cảnh hai tầng hiệu quả hơn việc viết lại prompt hay liên tục grep.",
     },
     {
-      title: "Dùng Sub-Agent để Điều phối Tác vụ Linh hoạt",
+      title: "Định tuyến Sub-Agent phân tầng (Tiered Pipelines)",
       bullets: [
-        "Phân rã theo ranh giới: mỗi agent một dịch vụ, tầng hoặc repo",
-        "Cho mỗi agent phạm vi hẹp và tiêu chí thành công rõ ràng",
-        "Chạy khảo sát song song, ghi tuần tự",
-        "Truyền lên bản tóm tắt cô đọng, không bao giờ là kết quả thô",
-        "Luôn tự kiểm chứng 'đã xong' — đừng tin tuyệt đối",
+        "Định tuyến mô hình theo chính sách: khớp năng lực tư duy của mô hình với độ khó tác vụ.",
+        "Giai đoạn 1 (Haiku): đọc hiểu nhanh, phân tích ticket Jira chi phí thấp.",
+        "Giai đoạn 2 (Sonnet): tư duy kiến trúc chuyên sâu và lập kế hoạch xử lý.",
+        "Giai đoạn 3 (Sonnet): thực thi mã nguồn trong một cửa sổ ngữ cảnh hoàn toàn sạch.",
       ],
-      insight:
-        "Sub-agent có giới hạn tốt nhân lên sức mạnh. Lỏng lẻo thì gây hỗn loạn và bùng nổ token.",
+      insight: "Cô lập ngữ cảnh. Giai đoạn sau thừa hưởng tóm tắt tinh gọn, không kế thừa rác thăm dò.",
     },
     {
-      title: "Tổ chức Ngữ cảnh: File, Workflows, Rule & Memory",
+      title: "Điều phối nâng cao: Fan-Out & Đối biện",
       bullets: [
-        "ARCHITECTURE.md — một bản đồ ranh giới, luồng dữ liệu và quyết định.",
-        "CLAUDE.md — bộ định tuyến luôn bật: giữ gọn, liên kết thay vì nhúng.",
-        "Workflows — thủ tục gọi được, tái sử dụng, có tài liệu riêng.",
-        "Rule & hook — thực thi tự động do harness chạy, không phải bạn.",
-        "Memory MCP (mempalace) — lưu giữ *lý do* xuyên suốt các phiên.",
+        "Parallel Fan-Out: triển khai nhiều sub-agent độc lập để xử lý các tác vụ song song.",
+        "Điều kiện ranh giới nghiêm ngặt: tác vụ không được tranh chấp file hoặc chung trạng thái.",
+        "Tranh luận đối biện (Adversarial Debate): hai sub-agent độc lập bảo vệ hai giải pháp trái ngược.",
+        "Loại bỏ định kiến tự thiên vị (self-preferential bias) bằng cấu trúc hệ thống thay vì kỳ vọng mô hình tự sửa.",
       ],
-      insight: "Kỹ thuật ngữ cảnh mới là giao diện thật sự với mô hình.",
+      insight: "Dynamic workflow giúp lập trình sẵn các vòng lặp và bước tổng hợp một cách nhất quán.",
     },
     {
-      title: "Tối ưu Token & Tránh Phình Ngữ cảnh",
+      title: "Hệ sinh thái MCP: Kết nối các Hệ thống dữ liệu gốc",
       bullets: [
-        "Yêu cầu câu trả lời cô đọng, không phải đổ dữ liệu thô",
-        "Tìm kiếm hẹp — chỉ nạp phần cần thiết",
-        "Nén kết quả sub-agent trước khi đưa lại vào",
-        "Lưu các dữ kiện ổn định trong Mempalace",
-        "Thành thạo Caveman Workflow: đầu ra ngắn gọn, cô đọng",
+        "Mở rộng không gian làm việc ngoài filesystem mà không cần copy-paste thủ công.",
+        "Jira MCP: nguồn dữ liệu gốc để theo dõi công việc và yêu cầu nghiệp vụ.",
+        "GitHub MCP: truy cập trực tiếp repo, duyệt mã nguồn và điều phối PR.",
+        "Confluence MCP: tự động hóa việc áp dụng chính sách, rào chắn tổ chức và tuân thủ.",
       ],
-      insight: "Token là ngân sách — hãy chi cho suy luận, không phải đọc lại.",
+      insight: "Ưu tiên công cụ: chọn các MCP nội bộ chuyên dụng thay vì tìm kiếm web chung chung.",
+    },
+
+    // ==========================================
+    // PHẦN 3: TỐI ƯU & ĐÚC KẾT (ANY)
+    // ==========================================
+    {
+      title: "Tối ưu hóa Token & Nén dữ liệu cực đoan",
+      bullets: [
+        "Yêu cầu sub-agent trả về tóm tắt cô đọng trước khi nạp lại vào luồng chính.",
+        "/caveman ultra: chế độ nén tối đa, loại bỏ hoàn toàn các câu xã giao và từ thừa.",
+        "Thông thường: 'Tôi rất vui được trợ giúp! Lỗi này xảy ra do token đã hết hạn...'",
+        "Ultra: 'Token hết hạn. Sửa TTL.'",
+      ],
+      insight: "Token là ngân sách—hãy tiêu vào tư duy logic, đừng tiêu vào việc đọc lại lời thừa.",
     },
     {
-      title: "Demo: Slide Web AI — Quy trình Trong Thực tế",
+      title: "Demo: Kỹ nghệ Hệ thống trong Thực tế",
       bullets: [
-        "Bộ slide này được dựng bằng các Workflows dựng sẵn.",
-        "Workflows + sub-agent dựng khung slide, bố cục và hoạt ảnh.",
-        "Memory MCP giữ design token và kiến trúc xuyên các phiên.",
-        "Xem vòng lặp chạy trực tiếp: khảo sát → lập kế hoạch → triển khai → kiểm chứng.",
-        "Cùng mô thức mở rộng từ bộ slide đến monorepo doanh nghiệp.",
+        "Thành quả: 1 ticket Jira, 11 repositories, 0 bối cảnh ban đầu, PR đã merged.",
+        "Theo dõi trực tiếp vòng lặp: điều tra → lập kế hoạch → thực thi → xác minh.",
+        "Mempalace MCP duy trì các token thiết kế và quy tắc trạng thái một cách động xuyên phiên.",
+        "Mô hình mở rộng linh hoạt: từ một slide deck này cho đến một monorepo doanh nghiệp.",
       ],
-      insight: "Quy trình chính là sản phẩm — xem nó tự dựng nên mình.",
+      insight: "Quy trình chính là sản phẩm—hãy xem nó tự vận hành và xây dựng.",
     },
     {
-      title: "Chuyển đổi Tư duy & Điểm Cốt lõi",
+      title: "Thay đổi Tư duy & Điểm rút ra Cốt lõi",
       bullets: [
-        "Xây hệ thống quanh Claude, không chỉ ra lệnh thô",
-        "Dựng workflows thay vì prompt dùng một lần",
-        "Làm chủ ngữ cảnh: ARCHITECTURE.md, CLAUDE.md, Workflows & Mempalace",
-        "Dùng sub-agent có giới hạn + tối ưu token triệt để",
-        "Xem Claude như đồng nghiệp mới vào nghề bạn quản lý, không phải phép màu",
+        "Cô lập các phân đoạn ngữ cảnh để chất lượng phản hồi không bị suy giảm theo thời gian.",
+        "Đặt đúng dữ liệu vào đúng tầng kiến trúc (CLAUDE.md vs. Skills vs. Rules vs. Memory).",
+        "Song song hóa tác vụ triệt để bất cứ khi nào các ràng buộc phụ thuộc cho phép.",
+        "Coi Claude như một cộng sự cấp dưới cần quản lý bằng hệ thống, không phải bằng phép thuật.",
       ],
-      insight: "Quy mô đến từ hệ thống bạn xây quanh mô hình.",
-    },
-    {
-      title: "Thú vị để Biết",
-      bullets: [
-        '/caveman ultra — cục súc tối đa. Thường: "Rất sẵn lòng giúp! Lỗi có lẽ do token đã hết hạn và…" → Ultra: "Token hết hạn. Sửa TTL."',
-        "Cavecrew — dynamic sub-agent chuyên biệt: builder, investigator, reviewer.",
-        "NeoLabHQ/context-engineering-kit — mẫu kiến trúc, TDD & brainstorm.",
-        '"Hack" Opus: tiêm system prompt Fable 5 để mở khóa toàn bộ khả năng suy luận — https://github.com/sgup/ai/blob/main/Fable5.md',
-      ],
-      insight: "Hệ sinh thái quanh Claude đổi thay nhanh — hãy luôn tò mò.",
+      insight: "Khả năng mở rộng đến từ hệ thống bạn xây dựng xung quanh mô hình.",
     },
     {
       title: "Hỏi & Đáp",

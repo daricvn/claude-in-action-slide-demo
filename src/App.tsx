@@ -84,7 +84,7 @@ const AMBIENT = [
 // is localized — one string per Locale (resolved via `locale()` at render).
 type Demo = { label: Record<Locale, string>; src: string };
 const SLIDE_DEMOS: Record<number, Demo[]> = {
-  6: [
+  8: [
     {
       label: {
         en: "Watch Mempalace Demo",
